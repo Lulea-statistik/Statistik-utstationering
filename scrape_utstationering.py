@@ -335,10 +335,49 @@ def scrape_municipality(page: Page, municipality: str, snapshot_date: str, snaps
     )
 
     all_rows: list[Row] = []
+    seen_page_signatures: set[tuple[str, ...]] = set()
+
     for page_no in range(1, max_pages + 1):
         rows = scrape_current_page(page, snapshot_date, snapshot_time, municipality, page_no)
+
+        # Diagnostic signature: use the first few detail URLs from the current
+        # result page. This lets us see whether "Nästa" actually reaches a new page.
+        result_links = page.locator("#posting-results a[href*='id=']")
+        signature = tuple(
+            (result_links.nth(i).get_attribute("href") or "")
+            for i in range(min(3, result_links.count()))
+        )
+        print(
+            f"PAGE {municipality} #{page_no}: rows={len(rows)}, "
+            f"detail_links={result_links.count()}, signature={signature}"
+        )
+
+        if signature and signature in seen_page_signatures:
+            print(f"REPEAT {municipality} #{page_no}: samma resultatsida har redan setts")
+            break
+        if signature:
+            seen_page_signatures.add(signature)
+
         all_rows.extend(rows)
+
+        # Log the visible next controls before clicking.
+        next_candidates = page.locator(
+            "a[rel='next'], a[aria-label*='Nästa' i], "
+            "button[aria-label*='Nästa' i], a:has-text('Nästa'), button:has-text('Nästa')"
+        )
+        next_info: list[str] = []
+        for i in range(min(5, next_candidates.count())):
+            item = next_candidates.nth(i)
+            if item.is_visible():
+                next_info.append(
+                    f"text={clean(item.inner_text())!r}, "
+                    f"href={item.get_attribute('href')!r}, "
+                    f"aria={item.get_attribute('aria-label')!r}"
+                )
+        print(f"NEXT {municipality} #{page_no}: {next_info}")
+
         if not click_next(page):
+            print(f"STOP {municipality} #{page_no}: ingen Nästa-kontroll")
             break
     return all_rows
 
