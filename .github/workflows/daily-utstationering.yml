@@ -57,4 +57,10 @@ jobs:
             exit 0
           fi
           git commit -m "Daglig utstationering $(date -u +'%Y-%m-%d')"
+
+          # Main may have advanced while the scrape was running.
+          # Rebase the generated data commit onto the current remote main
+          # before pushing, so a harmless concurrent commit does not cause
+          # a non-fast-forward failure.
+          git pull --rebase origin main
           git push
