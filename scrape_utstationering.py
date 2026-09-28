@@ -274,8 +274,7 @@ def scrape_municipality(page: Page, municipality: str, snapshot_date: str, snaps
     }
     municipality_code = municipality_values[municipality]
 
-    # Read the current industry codes from the live form so the scraper follows
-    # future changes to the list without hard-coding all codes.
+    # Read the current industry codes from the live form.
     industry_options = page.locator("select#E option")
     industry_codes: list[str] = []
     for i in range(industry_options.count()):
@@ -286,23 +285,31 @@ def scrape_municipality(page: Page, municipality: str, snapshot_date: str, snaps
     if not industry_codes:
         raise RuntimeError("Inga branschkoder hittades i select#E")
 
-    # The site's effective filters are SelectedCounties and Expertises.
-    # C and E are UI helper fields; relying only on them produced an empty result.
-    params = {
-        "SelectedCounties": municipality_code,
-        "Expertises": " ".join(industry_codes),
-        "ContractorName": "",
-        "C": "2403",
-        "E": "00",
-        "SelectedHitsPerPage": "50",
-    }
-    search_url = BASE_URL + "?" + urlencode(params)
+    # IMPORTANT: the search form is POST. GET query parameters are displayed
+    # back in the page but are not treated as active filter selections.
+    page.locator("#SelectedCounties").evaluate(
+        "(el, value) => { el.value = value; }",
+        municipality_code,
+    )
+    page.locator("#Expertises").evaluate(
+        "(el, value) => { el.value = value; }",
+        " ".join(industry_codes),
+    )
+
+    # C and E are helper dropdowns used to add one filter at a time. Keep them
+    # at their neutral value so they do not add an unrelated county/industry.
+    page.locator("select#C").select_option(value="0")
+    page.locator("select#E").select_option(value="0")
+    page.locator("#ContractorName").fill("")
+    page.locator("#SelectedHitsPerPage").select_option(value="50")
 
     print(
-        f"Direktsökning {municipality}: kommun={municipality_code}, "
+        f"POST-sökning {municipality}: kommun={municipality_code}, "
         f"branscher={len(industry_codes)}"
     )
-    page.goto(search_url, wait_until="domcontentloaded", timeout=60000)
+
+    with page.expect_navigation(wait_until="domcontentloaded", timeout=60000):
+        page.locator("#posting-search-form").evaluate("(form) => form.submit()")
     page.wait_for_load_state("networkidle")
 
     debug_name = municipality.lower().replace("å", "a").replace("ä", "a").replace("ö", "o")
@@ -316,7 +323,9 @@ def scrape_municipality(page: Page, municipality: str, snapshot_date: str, snaps
         encoding="utf-8",
     )
 
+    result_text = clean(page.locator("#posting-results").inner_text()) if page.locator("#posting-results").count() else ""
     print(f"Resultat-URL {municipality}: {page.url}")
+    print(f"Resultattext {municipality}: {result_text[:500]}")
     print(
         f"DOM {municipality}: "
         f"tables={page.locator('main table').count()}, "
