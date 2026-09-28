@@ -75,44 +75,41 @@ def find_select(page: Page, label_regex: str) -> Locator:
 
 
 def select_municipality(page: Page, municipality: str) -> None:
-    sel = find_select(page, r"kommun")
-    options = sel.locator("option")
-    matches = []
-    for i in range(options.count()):
-        opt = options.nth(i)
-        text = clean(opt.inner_text())
-        value = opt.get_attribute("value") or ""
-        if municipality.casefold() in text.casefold():
-            matches.append((text, value))
-    if not matches:
-        raise RuntimeError(f"Kommunen {municipality} hittades inte i listan")
-    # Prefer exact/shortest text match.
-    matches.sort(key=lambda x: (x[0].casefold() != municipality.casefold(), len(x[0])))
-    text, value = matches[0]
-    if value:
-        sel.select_option(value=value)
-    else:
-        sel.select_option(label=text)
+    sel = page.locator("select#C")
+    if not sel.count():
+        raise RuntimeError("Kommunfältet select#C hittades inte")
+
+    municipality_values = {
+        "Luleå": "2580",
+        "Boden": "2582",
+    }
+    value = municipality_values.get(municipality)
+    if not value:
+        raise RuntimeError(f"Okänd kommun: {municipality}")
+
+    sel.select_option(value=value)
+    print(f"Vald kommun: {municipality} ({value})")
 
 
 def select_all_industries(page: Page) -> None:
-    sel = find_select(page, r"bransch")
+    sel = page.locator("select#E")
+    if not sel.count():
+        raise RuntimeError("Branschfältet select#E hittades inte")
+
     options = sel.locator("option")
     values: list[str] = []
     for i in range(options.count()):
         opt = options.nth(i)
         value = (opt.get_attribute("value") or "").strip()
-        text = clean(opt.inner_text())
-        disabled = opt.is_disabled()
-        # Exclude placeholder-like choices, but keep genuine code 00 etc.
-        if disabled or not value:
-            continue
-        if re.search(r"välj|select", text, re.I):
+        if not value:
             continue
         values.append(value)
+
     if not values:
         raise RuntimeError("Inga branschvärden hittades")
+
     sel.select_option(values)
+    print(f"Valde {len(values)} branscher")
 
 
 def click_search(page: Page) -> None:
@@ -126,23 +123,23 @@ def click_search(page: Page) -> None:
 
 
 def set_max_hits_per_page(page: Page) -> None:
-    try:
-        sel = find_select(page, r"resultat per sida")
-    except Exception:
+    sel = page.locator("select#SelectedHitsPerPage")
+    if not sel.count():
         return
-    opts = sel.locator("option")
-    numeric: list[tuple[int, str]] = []
-    for i in range(opts.count()):
-        opt = opts.nth(i)
+
+    options = sel.locator("option")
+    numeric: list[int] = []
+    for i in range(options.count()):
+        opt = options.nth(i)
         value = (opt.get_attribute("value") or "").strip()
-        text = clean(opt.inner_text())
-        m = re.search(r"\d+", text)
-        if m and value:
-            numeric.append((int(m.group()), value))
+        if value.isdigit():
+            numeric.append(int(value))
+
     if numeric:
-        _, value = max(numeric)
-        sel.select_option(value=value)
+        max_value = str(max(numeric))
+        sel.select_option(value=max_value)
         page.wait_for_load_state("networkidle")
+        print(f"Resultat per sida: {max_value}")
 
 
 def text_after_label(text: str, labels: Iterable[str]) -> str:
