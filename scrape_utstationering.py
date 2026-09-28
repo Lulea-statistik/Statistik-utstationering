@@ -6,6 +6,7 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
 from typing import Iterable
+from urllib.parse import urlencode
 
 from playwright.sync_api import Page, Locator, sync_playwright
 
@@ -267,13 +268,43 @@ def scrape_municipality(page: Page, municipality: str, snapshot_date: str, snaps
     page.goto(BASE_URL, wait_until="domcontentloaded", timeout=60000)
     page.wait_for_load_state("networkidle")
 
-    select_municipality(page, municipality)
-    select_all_industries(page)
-    click_search(page)
-    set_max_hits_per_page(page)
+    municipality_values = {
+        "Luleå": "2580",
+        "Boden": "2582",
+    }
+    municipality_code = municipality_values[municipality]
 
-    # Save the actual result page on every run. This makes markup changes
-    # diagnosable even when the page loads successfully but our parser finds 0 rows.
+    # Read the current industry codes from the live form so the scraper follows
+    # future changes to the list without hard-coding all codes.
+    industry_options = page.locator("select#E option")
+    industry_codes: list[str] = []
+    for i in range(industry_options.count()):
+        value = (industry_options.nth(i).get_attribute("value") or "").strip()
+        if value and value != "0":
+            industry_codes.append(value)
+
+    if not industry_codes:
+        raise RuntimeError("Inga branschkoder hittades i select#E")
+
+    # The site's effective filters are SelectedCounties and Expertises.
+    # C and E are UI helper fields; relying only on them produced an empty result.
+    params = {
+        "SelectedCounties": municipality_code,
+        "Expertises": " ".join(industry_codes),
+        "ContractorName": "",
+        "C": "2403",
+        "E": "00",
+        "SelectedHitsPerPage": "50",
+    }
+    search_url = BASE_URL + "?" + urlencode(params)
+
+    print(
+        f"Direktsökning {municipality}: kommun={municipality_code}, "
+        f"branscher={len(industry_codes)}"
+    )
+    page.goto(search_url, wait_until="domcontentloaded", timeout=60000)
+    page.wait_for_load_state("networkidle")
+
     debug_name = municipality.lower().replace("å", "a").replace("ä", "a").replace("ö", "o")
     DEBUG_DIR.mkdir(parents=True, exist_ok=True)
     page.screenshot(
@@ -284,12 +315,14 @@ def scrape_municipality(page: Page, municipality: str, snapshot_date: str, snaps
         page.content(),
         encoding="utf-8",
     )
+
     print(f"Resultat-URL {municipality}: {page.url}")
     print(
         f"DOM {municipality}: "
         f"tables={page.locator('main table').count()}, "
         f"articles={page.locator('main article').count()}, "
-        f"links={page.locator('main a[href]').count()}"
+        f"result_children={page.locator('#posting-results > *').count()}, "
+        f"links={page.locator('#posting-results a[href]').count()}"
     )
 
     all_rows: list[Row] = []
