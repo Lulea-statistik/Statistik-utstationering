@@ -2,6 +2,10 @@ name: Daglig utstationering
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "scrape_utstationering.py"
+      - ".github/workflows/daily-utstationering.yml"
   schedule:
     # GitHub cron använder UTC. Kör 04:15 UTC varje dag.
     # Det motsvarar 06:15 svensk sommartid och 05:15 svensk vintertid.
