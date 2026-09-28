@@ -272,6 +272,26 @@ def scrape_municipality(page: Page, municipality: str, snapshot_date: str, snaps
     click_search(page)
     set_max_hits_per_page(page)
 
+    # Save the actual result page on every run. This makes markup changes
+    # diagnosable even when the page loads successfully but our parser finds 0 rows.
+    debug_name = municipality.lower().replace("å", "a").replace("ä", "a").replace("ö", "o")
+    DEBUG_DIR.mkdir(parents=True, exist_ok=True)
+    page.screenshot(
+        path=str(DEBUG_DIR / f"{debug_name}_{snapshot_date}.png"),
+        full_page=True,
+    )
+    (DEBUG_DIR / f"{debug_name}_{snapshot_date}.html").write_text(
+        page.content(),
+        encoding="utf-8",
+    )
+    print(f"Resultat-URL {municipality}: {page.url}")
+    print(
+        f"DOM {municipality}: "
+        f"tables={page.locator('main table').count()}, "
+        f"articles={page.locator('main article').count()}, "
+        f"links={page.locator('main a[href]').count()}"
+    )
+
     all_rows: list[Row] = []
     for page_no in range(1, max_pages + 1):
         rows = scrape_current_page(page, snapshot_date, snapshot_time, municipality, page_no)
