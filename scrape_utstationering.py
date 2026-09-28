@@ -6,7 +6,7 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
 from typing import Iterable
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urljoin
 
 from playwright.sync_api import Page, Locator, sync_playwright
 
@@ -239,28 +239,26 @@ def scrape_current_page(page: Page, snapshot_date: str, snapshot_time: str, muni
 
 
 def click_next(page: Page) -> bool:
-    selectors = [
-        "a[rel='next']",
-        "button[aria-label*='Nästa' i]",
-        "a[aria-label*='Nästa' i]",
-    ]
-    for selector in selectors:
-        loc = page.locator(selector)
-        if loc.count() and loc.first.is_visible() and loc.first.is_enabled():
-            loc.first.click()
+    # Use the pagination link's actual href. A normal Playwright click on this
+    # site can keep the browser on the same POST result page.
+    next_link = page.locator("a[rel='next']")
+    if not next_link.count():
+        next_link = page.get_by_role("link", name=re.compile(r"nästa", re.I))
+
+    if next_link.count() and next_link.first.is_visible():
+        href = next_link.first.get_attribute("href")
+        if href:
+            target = urljoin(page.url, href)
+            page.goto(target, wait_until="domcontentloaded", timeout=60000)
             page.wait_for_load_state("networkidle")
             return True
 
-    nxt = page.get_by_role("link", name=re.compile(r"nästa", re.I))
-    if nxt.count() and nxt.first.is_visible():
-        nxt.first.click()
+    next_btn = page.get_by_role("button", name=re.compile(r"nästa", re.I))
+    if next_btn.count() and next_btn.first.is_visible() and next_btn.first.is_enabled():
+        next_btn.first.click()
         page.wait_for_load_state("networkidle")
         return True
-    nxt_btn = page.get_by_role("button", name=re.compile(r"nästa", re.I))
-    if nxt_btn.count() and nxt_btn.first.is_visible() and nxt_btn.first.is_enabled():
-        nxt_btn.first.click()
-        page.wait_for_load_state("networkidle")
-        return True
+
     return False
 
 
@@ -335,11 +333,29 @@ def scrape_municipality(page: Page, municipality: str, snapshot_date: str, snaps
     )
 
     all_rows: list[Row] = []
+    seen_page_signatures: set[tuple[str, ...]] = set()
+
     for page_no in range(1, max_pages + 1):
         rows = scrape_current_page(page, snapshot_date, snapshot_time, municipality, page_no)
+
+        # Safety guard against accidental pagination loops.
+        result_links = page.locator("#posting-results a[href*='id=']")
+        signature = tuple(
+            (result_links.nth(i).get_attribute("href") or "")
+            for i in range(min(3, result_links.count()))
+        )
+        if signature and signature in seen_page_signatures:
+            raise RuntimeError(
+                f"Pagination loop detected for {municipality} on page {page_no}"
+            )
+        if signature:
+            seen_page_signatures.add(signature)
+
         all_rows.extend(rows)
+
         if not click_next(page):
             break
+
     return all_rows
 
 
