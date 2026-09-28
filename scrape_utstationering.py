@@ -6,7 +6,7 @@ from dataclasses import dataclass, asdict
 from datetime import datetime
 from pathlib import Path
 from typing import Iterable
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urljoin
 
 from playwright.sync_api import Page, Locator, sync_playwright
 
@@ -239,28 +239,29 @@ def scrape_current_page(page: Page, snapshot_date: str, snapshot_time: str, muni
 
 
 def click_next(page: Page) -> bool:
-    selectors = [
-        "a[rel='next']",
-        "button[aria-label*='Nästa' i]",
-        "a[aria-label*='Nästa' i]",
-    ]
-    for selector in selectors:
-        loc = page.locator(selector)
-        if loc.count() and loc.first.is_visible() and loc.first.is_enabled():
-            loc.first.click()
+    # Prefer the pagination link's actual href. On this site, Playwright click()
+    # can leave us on the same POST result page even though the link points to
+    # ?page=2. Navigating to the href directly preserves the selected filters
+    # encoded in the pagination URL.
+    next_link = page.locator("a[rel='next']")
+    if not next_link.count():
+        next_link = page.get_by_role("link", name=re.compile(r"nästa", re.I))
+
+    if next_link.count() and next_link.first.is_visible():
+        href = next_link.first.get_attribute("href")
+        if href:
+            target = urljoin(page.url, href)
+            print(f"NAVIGATE NEXT: {target}")
+            page.goto(target, wait_until="domcontentloaded", timeout=60000)
             page.wait_for_load_state("networkidle")
             return True
 
-    nxt = page.get_by_role("link", name=re.compile(r"nästa", re.I))
-    if nxt.count() and nxt.first.is_visible():
-        nxt.first.click()
+    next_btn = page.get_by_role("button", name=re.compile(r"nästa", re.I))
+    if next_btn.count() and next_btn.first.is_visible() and next_btn.first.is_enabled():
+        next_btn.first.click()
         page.wait_for_load_state("networkidle")
         return True
-    nxt_btn = page.get_by_role("button", name=re.compile(r"nästa", re.I))
-    if nxt_btn.count() and nxt_btn.first.is_visible() and nxt_btn.first.is_enabled():
-        nxt_btn.first.click()
-        page.wait_for_load_state("networkidle")
-        return True
+
     return False
 
 
