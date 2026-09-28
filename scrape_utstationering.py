@@ -420,16 +420,27 @@ def main() -> None:
     write_csv(daily_path, all_rows, append=False)
     write_csv(OUT_DIR / "latest.csv", all_rows, append=False)
 
-    # Append only once per snapshot date to history.csv.
+    # Replace the current snapshot date in history.csv.
+    # This makes same-day reruns idempotent and allows corrected reruns
+    # to replace an earlier incomplete snapshot.
     history = OUT_DIR / "history.csv"
-    existing_dates = set()
+    historical_rows: list[dict[str, str]] = []
+    fieldnames = list(asdict(all_rows[0]).keys())
+
     if history.exists():
         with history.open("r", newline="", encoding="utf-8-sig") as f:
-            for row in csv.DictReader(f, delimiter=";"):
-                if row.get("SnapshotDate"):
-                    existing_dates.add(row["SnapshotDate"])
-    if snapshot_date not in existing_dates:
-        write_csv(history, all_rows, append=True)
+            reader = csv.DictReader(f, delimiter=";")
+            for row in reader:
+                if row.get("SnapshotDate") != snapshot_date:
+                    historical_rows.append(row)
+
+    with history.open("w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=";")
+        writer.writeheader()
+        for row in historical_rows:
+            writer.writerow(row)
+        for r in all_rows:
+            writer.writerow(asdict(r))
 
     print(f"Klart: {len(all_rows)} unika rader")
     print(f"Daglig fil: {daily_path}")
