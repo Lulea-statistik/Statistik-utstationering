@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+playwright-report/
+debug/*.html
+debug/*.png
