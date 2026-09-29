@@ -7,9 +7,12 @@ on:
       - "scrape_utstationering.py"
       - ".github/workflows/daily-utstationering.yml"
   schedule:
-    # GitHub cron använder UTC. Kör 04:15 UTC varje dag.
-    # Det motsvarar 06:15 svensk sommartid och 05:15 svensk vintertid.
-    - cron: "15 4 * * *"
+    # Kör på svensk lokal tid året runt.
+    # Första försök 06:15, reservförsök 07:15.
+    - cron: "15 6 * * *"
+      timezone: "Europe/Stockholm"
+    - cron: "15 7 * * *"
+      timezone: "Europe/Stockholm"
 
 permissions:
   contents: write
@@ -23,23 +26,41 @@ jobs:
       - name: Checka ut repo
         uses: actions/checkout@v4
 
+      - name: Avgör om reservkörning behövs
+        id: run_guard
+        shell: bash
+        run: |
+          TODAY="$(TZ=Europe/Stockholm date +'%Y-%m-%d')"
+          DAILY_FILE="data/daily/utstationering_${TODAY}.csv"
+
+          if [[ "${{ github.event_name }}" == "schedule" && "${{ github.event.schedule }}" == "15 7 * * *" && -f "${DAILY_FILE}" ]]; then
+            echo "should_run=false" >> "${GITHUB_OUTPUT}"
+            echo "Reservkörningen hoppas över: ${DAILY_FILE} finns redan."
+          else
+            echo "should_run=true" >> "${GITHUB_OUTPUT}"
+            echo "Hämtningen ska köras."
+          fi
+
       - name: Python
+        if: steps.run_guard.outputs.should_run == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
 
       - name: Installera paket
+        if: steps.run_guard.outputs.should_run == 'true'
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           python -m playwright install --with-deps chromium
 
       - name: Hämta Luleå och Boden
+        if: steps.run_guard.outputs.should_run == 'true'
         run: python scrape_utstationering.py
 
       - name: Ladda upp debug vid fel
-        if: failure()
+        if: failure() && steps.run_guard.outputs.should_run == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: utstationering-debug
@@ -48,6 +69,7 @@ jobs:
           retention-days: 14
 
       - name: Commit och push om data ändrats
+        if: steps.run_guard.outputs.should_run == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -56,7 +78,7 @@ jobs:
             echo "Inga ändringar att committa."
             exit 0
           fi
-          git commit -m "Daglig utstationering $(date -u +'%Y-%m-%d')"
+          git commit -m "Daglig utstationering $(TZ=Europe/Stockholm date +'%Y-%m-%d')"
 
           # Main may have advanced while the scrape was running.
           # Rebase the generated data commit onto the current remote main
