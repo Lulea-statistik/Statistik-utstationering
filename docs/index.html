@@ -76,7 +76,7 @@ function render(){
  const approx=loc.precision==='street';const circle=L.circleMarker([+loc.lat,+loc.lon],{radius:Math.max(4,Math.sqrt(n)*3.0),weight:1.5,color:approx?'#b36c0b':'#155d96',fillColor:approx?'#e6a43a':'#2586bc',dashArray:approx?'4 4':null,fillOpacity:.55}).addTo(circles);
  const firms=[...eachGroup(rs,r=>r.Arbetsgivare)].sort((a,b)=>count(b[1])-count(a[1])).map(([name,recs])=>esc(name)+' ('+count(recs)+')').join('<br>');
  circle.bindPopup('<b>'+esc(rs[0].Plats)+'</b><br>'+esc(rs[0].Kommun)+'<br><b>'+n+' registrerade arbetstagare</b><br>'+(approx?'<em>Ungefärlig gatuposition – inte exakt adress</em>':'Adressposition')+'<hr>'+firms);
- circle.on('click',()=>{activeAddress=k;$('address').value=k;$('addressCombo').refresh();drawCharts()});points.push([+loc.lat,+loc.lon]);
+ circle.on('click',()=>{map.flyTo([+loc.lat,+loc.lon],Math.max(map.getZoom(),approx?15:17),{animate:true,duration:1.1});activeAddress=k;$('address').value=k;$('addressCombo').refresh();drawCharts()});points.push([+loc.lat,+loc.lon]);
  }
  $('coverage').textContent=mapped+' / '+group.size;$('geoNotice').hidden=mapped===group.size;$('geoNotice').textContent=(group.size-mapped)+' adresser saknar kartposition men visas i adresstabellen med länk för adressökning.'+(Object.keys(coords).length===0?' Koordinatfilen är ännu inte skapad: gå till GitHub → Actions → Geokoda utstationeringsadresser → Run workflow.':'');
  if(points.length)map.fitBounds(L.latLngBounds(points).pad(.18),{maxZoom:13});
