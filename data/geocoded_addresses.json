@@ -1,12 +1,110 @@
 {
+  "Bodenvägen 405 95442 Södra Sunderbyn|Luleå": {
+    "lat": 65.6640566,
+    "lon": 21.9532407,
+    "matched_name": "Gamla Bodenvägen, Kvarnronningen, Södra Sunderbyn, Luleå kommun, Norrbottens län, 942 41, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Brogatan 32 96164 Boden|Boden": {
+    "lat": 65.8254226,
+    "lon": 21.6780155,
+    "matched_name": "Brogatan, Björknäs, Boden, Bodens kommun, Norrbottens län, 961 64, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Datavägen 10 97754 Luleå|Luleå": {
+    "lat": 65.6186453,
+    "lon": 22.1162329,
+    "matched_name": "Datavägen, Porsögården, Mjölkudden, Luleå, Luleå kommun, Norrbottens län, 977 55, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Drottninggatan 4 96135 Boden|Boden": {
+    "lat": 65.82347,
+    "lon": 21.6857539,
+    "matched_name": "Drottninggatan, Björknäs, Boden, Bodens kommun, Norrbottens län, 961 35, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
   "Handelsvägen 19 97345 Luleå|Luleå": {
     "lat": 65.6241305,
     "lon": 22.0466211,
     "source": "OpenStreetMap Nominatim"
   },
+  "Hangargränd 1 96143 Boden|Boden": {
+    "lat": 65.8071372,
+    "lon": 21.6842438,
+    "matched_name": "Hangargränd, Boden, Bodens kommun, Norrbottens län, 961 43, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Haparandavägen 300 97596 Luleå|Luleå": {
+    "lat": 65.6377567,
+    "lon": 22.1179255,
+    "matched_name": "Haparandavägen, Inibyn, Björsbyn, Luleå kommun, Norrbottens län, 977 55, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Hedenbrovägen 2 96136 Boden|Boden": {
+    "lat": 65.8197086,
+    "lon": 21.6640753,
+    "matched_name": "Hedenbrovägen, Sveafältet, Boden, Bodens kommun, Norrbottens län, 961 36, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Holmarvägen 153 97598 Luleå|Luleå": {
+    "lat": 65.7683163,
+    "lon": 22.1545793,
+    "matched_name": "Holmarvägen, Börjelslandet, Luleå kommun, Norrbottens län, 975 98, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Kungsgatan 41 96134 Boden|Boden": {
+    "lat": 65.8264151,
+    "lon": 21.6978758,
+    "matched_name": "Kungsgatan, Prästholmen, Boden, Bodens kommun, Norrbottens län, 961 86, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
   "Lejdevägen 10 97596 Luleå|Luleå": {
     "lat": 65.6236422,
     "lon": 22.2007237,
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Långbackavägen 10 97595 Luleå|Luleå": {
+    "lat": 65.5360315,
+    "lon": 21.9168117,
+    "matched_name": "Långbackavägen, Långbacken, Måttsund, Luleå kommun, Norrbottens län, 975 92, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Långnäsvägen 30 97593 Luleå|Luleå": {
+    "lat": 65.575066,
+    "lon": 21.7579177,
+    "matched_name": "Långnäsvägen, Rågholmen, Alvik, Luleå kommun, Norrbottens län, 975 93, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Moråsleden 1 96167 Boden|Boden": {
+    "lat": 65.83324,
+    "lon": 21.7213243,
+    "matched_name": "Moråsleden, Erikslund, Boden, Bodens kommun, Norrbottens län, 961 67, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Råbäcken 1 96193 Boden|Boden": {
+    "lat": 65.7713036,
+    "lon": 21.6833657,
+    "matched_name": "Råbäcken, Bodens kommun, Norrbottens län, 961 43, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Sandnäsetvägen 224 97594 Luleå|Luleå": {
+    "lat": 65.6428128,
+    "lon": 21.9032873,
+    "matched_name": "Sandnäsetvägen, Grannäset, Bälinge, Luleå kommun, Norrbottens län, 954 42, Sverige",
+    "precision": "street",
     "source": "OpenStreetMap Nominatim"
   },
   "Sjukhusvägen 10 95442 Södra Sunderbyn|Luleå": {
@@ -19,6 +117,41 @@
     "lon": 22.0414777,
     "source": "OpenStreetMap Nominatim"
   },
+  "Strömörvägen 2C 97437 Luleå|Luleå": {
+    "lat": 65.5536113,
+    "lon": 22.2306708,
+    "matched_name": "Strömörvägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 38, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Svartövägen 10 97437 Luleå|Luleå": {
+    "lat": 65.5630156,
+    "lon": 22.1987176,
+    "matched_name": "Svartövägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 37, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Svartövägen 20 97437 Luleå|Luleå": {
+    "lat": 65.5630156,
+    "lon": 22.1987176,
+    "matched_name": "Svartövägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 37, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Svartövägen 22 97437 Luleå|Luleå": {
+    "lat": 65.5630156,
+    "lon": 22.1987176,
+    "matched_name": "Svartövägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 37, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Svedjebergsvägen 10 96140 Boden|Boden": {
+    "lat": 65.8136846,
+    "lon": 21.7529892,
+    "matched_name": "Svedjebergsvägen, Norra Svartbyn, Södra Svartbyn, Bodens kommun, Norrbottens län, 961 40, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
   "Teknikvägen 1 97347 Luleå|Luleå": {
     "lat": 65.6132059,
     "lon": 22.1322223,
@@ -27,6 +160,13 @@
   "Teknikvägen 3 96150 Boden|Boden": {
     "lat": 65.7574548,
     "lon": 21.758779,
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Uddebovägen 1 97437 Luleå|Luleå": {
+    "lat": 65.570748,
+    "lon": 22.2014398,
+    "matched_name": "Uddebovägen, Örnäset, Luleå, Luleå kommun, Norrbottens län, 974 36, Sverige",
+    "precision": "street",
     "source": "OpenStreetMap Nominatim"
   },
   "Västra Varvsgatan 11 97236 Luleå|Luleå": {
