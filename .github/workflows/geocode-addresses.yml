@@ -1,6 +1,10 @@
 name: Geokoda utstationeringsadresser
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/geocode-addresses.yml'
+      - 'geocode_addresses.py'
   schedule:
     - cron: "30 8 * * 1"
 permissions:
