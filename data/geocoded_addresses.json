@@ -1,0 +1,37 @@
+{
+  "Handelsvägen 19 97345 Luleå|Luleå": {
+    "lat": 65.6241305,
+    "lon": 22.0466211,
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Lejdevägen 10 97596 Luleå|Luleå": {
+    "lat": 65.6236422,
+    "lon": 22.2007237,
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Sjukhusvägen 10 95442 Södra Sunderbyn|Luleå": {
+    "lat": 65.672604,
+    "lon": 21.9314841,
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Storhedsvägen 1 97345 Luleå|Luleå": {
+    "lat": 65.6187246,
+    "lon": 22.0414777,
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Teknikvägen 1 97347 Luleå|Luleå": {
+    "lat": 65.6132059,
+    "lon": 22.1322223,
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Teknikvägen 3 96150 Boden|Boden": {
+    "lat": 65.7574548,
+    "lon": 21.758779,
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Västra Varvsgatan 11 97236 Luleå|Luleå": {
+    "lat": 65.5799977,
+    "lon": 22.1369429,
+    "source": "OpenStreetMap Nominatim"
+  }
+}
