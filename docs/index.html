@@ -8,6 +8,7 @@
 <main class="wrap"><section class="toolbar">
 <label>Kommun<select id="municipality"><option value="">Luleå och Boden</option><option>Luleå</option><option>Boden</option></select></label>
 <label>Datum<select id="date"></select></label>
+<label>Arbetsgivare<select id="employer"><option value="">Alla arbetsgivare</option></select></label>
 <label>Adress<select id="address"><option value="">Alla adresser</option></select></label>
 <label>Sök adress eller arbetsgivare<input id="search" placeholder="Skriv för att filtrera"></label>
 </section>
@@ -37,17 +38,17 @@ async function init(){
  const [hist,latest,geos]=await Promise.allSettled([fetchText(root+'data/history.csv'),fetchText(root+'data/latest.csv'),fetchText(root+'data/geocoded_addresses.json')]);
  if(hist.status==='fulfilled')rows=parse(hist.value);
  if(latest.status==='fulfilled'){const last=parse(latest.value),lastDates=new Set(rows.map(r=>r.SnapshotDate));if(last.length && !lastDates.has(last[0].SnapshotDate))rows.push(...last)}
- if(geos.status==='fulfilled'){try{coords=JSON.parse(geos.value)}catch{}}
+ if(geos.status==='fulfilled'){try{coords=JSON.parse(geos.value)}catch{}}else{$('status').textContent='Adresskoordinater saknas. Kör geokodningsflödet i GitHub Actions.'}
  if(!rows.length){$('status').textContent='Inga giltiga dataposter kunde läsas. Kontrollera CSV-filerna i repot.';return}
  $('date').innerHTML=dates().reverse().map(d=>'<option value="'+d+'">'+d+'</option>').join('');
- $('date').value=dates().at(-1);for(let id of ['municipality','date','address','search'])$(id).addEventListener(id==='search'?'input':'change',()=>{if(id==='municipality'){activeAddress='';$('address').value=''}if(id==='address')activeAddress=$('address').value;render()});
- render();$('status').textContent='Datakälla: '+root+'data/ · Uppdaterat för '+dates().at(-1);
+ $('date').value=dates().at(-1);for(let id of ['municipality','date','employer','address','search'])$(id).addEventListener(id==='search'?'input':'change',()=>{if(id==='municipality'||id==='employer'){activeAddress='';$('address').value=''}if(id==='address')activeAddress=$('address').value;render()});
+ render();$('status').textContent='Datakälla: '+root+'data/ · Uppdaterat för '+dates().at(-1)+(Object.keys(coords).length?' · Geokodade adresser: '+Object.keys(coords).length:' · Koordinatfil saknas; geokodning krävs för kartcirklar');
 }
 function dataAt(d){return rows.filter(r=>r.SnapshotDate===d)}
 function baseFiltered(arr){const k=$('municipality').value;return arr.filter(r=>!k||r.Kommun===k)}
-function selected(){const q=norm($('search').value).toLowerCase(),a=$('address').value;return baseFiltered(dataAt($('date').value)).filter(r=>(!a||key(r.Plats,r.Kommun)===a)&&(!q||[r.Plats,r.Kommun,r.Arbetsgivare].some(s=>norm(s).toLowerCase().includes(q))))}
+function selected(){const q=norm($('search').value).toLowerCase(),a=$('address').value,e=$('employer').value;return baseFiltered(dataAt($('date').value)).filter(r=>(!e||norm(r.Arbetsgivare)===e)&&(!a||key(r.Plats,r.Kommun)===a)&&(!q||[r.Plats,r.Kommun,r.Arbetsgivare].some(s=>norm(s).toLowerCase().includes(q))))}
 function render(){
- const allToday=baseFiltered(dataAt($('date').value));const addresses=eachGroup(allToday,r=>key(r.Plats,r.Kommun));let current=$('address').value;
+ const allToday=baseFiltered(dataAt($('date').value));const employerNames=[...new Set(allToday.map(r=>norm(r.Arbetsgivare)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'sv'));const previousEmployer=$('employer').value;$('employer').innerHTML='<option value="">Alla arbetsgivare</option>'+employerNames.map(e=>'<option value="'+esc(e)+'">'+esc(e)+'</option>').join('');if(employerNames.includes(previousEmployer))$('employer').value=previousEmployer;const forAddresses=allToday.filter(r=>!$('employer').value||norm(r.Arbetsgivare)===$('employer').value);const addresses=eachGroup(forAddresses,r=>key(r.Plats,r.Kommun));let current=$('address').value;
  $('address').innerHTML='<option value="">Alla adresser</option>'+[...addresses].sort((a,b)=>count(b[1])-count(a[1])).map(([k,rs])=>'<option value="'+esc(k)+'">'+esc(rs[0].Plats)+' ('+esc(rs[0].Kommun)+')</option>').join('');
  if(addresses.has(current))$('address').value=current;else $('address').value='';
  const v=selected(),group=eachGroup(v,r=>key(r.Plats,r.Kommun));$('workers').textContent=count(v).toLocaleString('sv-SE');$('sites').textContent=group.size.toLocaleString('sv-SE');$('entries').textContent=v.length.toLocaleString('sv-SE');circles.clearLayers();
@@ -58,7 +59,7 @@ function render(){
  circle.bindPopup('<b>'+esc(rs[0].Plats)+'</b><br>'+esc(rs[0].Kommun)+'<br><b>'+n+' registrerade arbetstagare</b><hr>'+firms);
  circle.on('click',()=>{activeAddress=k;$('address').value=k;drawCharts()});points.push([+loc.lat,+loc.lon]);
  }
- $('coverage').textContent=mapped+' / '+group.size;$('geoNotice').hidden=mapped===group.size;$('geoNotice').textContent=(group.size-mapped)+' adresser saknar verifierad koordinat och visas endast i adresstabellen.';
+ $('coverage').textContent=mapped+' / '+group.size;$('geoNotice').hidden=mapped===group.size;$('geoNotice').textContent=(group.size-mapped)+' adresser saknar verifierad koordinat och visas endast i adresstabellen.'+(Object.keys(coords).length===0?' Koordinatfilen är ännu inte skapad: gå till GitHub → Actions → Geokoda utstationeringsadresser → Run workflow.':'');
  if(points.length)map.fitBounds(L.latLngBounds(points).pad(.18),{maxZoom:13});
  $('top').innerHTML=sorted.slice(0,100).map(([k,rs])=>'<tr class="pick" data-key="'+esc(k)+'"><td>'+esc(rs[0].Plats)+'</td><td>'+esc(rs[0].Kommun)+'</td><td>'+count(rs)+'</td></tr>').join('');
  document.querySelectorAll('tr.pick').forEach(el=>el.addEventListener('click',()=>{activeAddress=el.dataset.key;$('address').value=activeAddress;drawCharts()}));
@@ -69,11 +70,11 @@ function chart(id,old,datasets,labelDates){if(old)old.destroy();return new Chart
 function makeSeries(name,values,color){return {label:name,data:values,borderColor:color,backgroundColor:color,borderWidth:2,pointRadius:values.length>45?1:2,spanGaps:false,tension:.15}}
 function drawCharts(){
  const ds=dates(),cols=['#c32834','#d2a52c','#2477a8','#48a174','#8962a3'];
- const municipalities=$('municipality').value?[$('municipality').value]:['Luleå','Boden'];
- municipalityChart=chart('municipalityChart',municipalityChart,municipalities.map((m,i)=>makeSeries(m,ds.map(d=>count(rows.filter(r=>r.SnapshotDate===d&&r.Kommun===m))),cols[i])),ds);
+ const municipalities=$('municipality').value?[$('municipality').value]:['Luleå','Boden'];const employer=$('employer').value;
+ municipalityChart=chart('municipalityChart',municipalityChart,municipalities.map((m,i)=>makeSeries(m,ds.map(d=>count(rows.filter(r=>r.SnapshotDate===d&&r.Kommun===m&&(!employer||norm(r.Arbetsgivare)===employer)))),cols[i])),ds);
  const choice=activeAddress||$('address').value;
- let keys;if(choice)keys=[choice];else{let recent=baseFiltered(dataAt(ds.at(-1)));keys=[...eachGroup(recent,r=>key(r.Plats,r.Kommun))].sort((a,b)=>count(b[1])-count(a[1])).slice(0,5).map(e=>e[0])}
- addressChart=chart('addressChart',addressChart,keys.map((k,i)=>makeSeries(k.split('|').join(' – '),ds.map(d=>{const daily=rows.filter(r=>r.SnapshotDate===d&&key(r.Plats,r.Kommun)===k);return daily.length?count(daily):null}),cols[i%cols.length])),ds);
+ let keys;if(choice)keys=[choice];else{let recent=baseFiltered(dataAt(ds.at(-1))).filter(r=>!employer||norm(r.Arbetsgivare)===employer);keys=[...eachGroup(recent,r=>key(r.Plats,r.Kommun))].sort((a,b)=>count(b[1])-count(a[1])).slice(0,5).map(e=>e[0])}
+ addressChart=chart('addressChart',addressChart,keys.map((k,i)=>makeSeries(k.split('|').join(' – '),ds.map(d=>{const daily=rows.filter(r=>r.SnapshotDate===d&&key(r.Plats,r.Kommun)===k&&(!employer||norm(r.Arbetsgivare)===employer));return daily.length?count(daily):null}),cols[i%cols.length])),ds);
  $('addressDescription').textContent=choice?'Vald adress: '+choice.split('|').join(' – '):'De fem största adresserna vid senast tillgängliga observation.';
 }
 init().catch(e=>{$('status').textContent='Kunde inte ladda data: '+e.message;console.error(e)});
