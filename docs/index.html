@@ -25,9 +25,9 @@
 <script>
 const root='https://raw.githubusercontent.com/Lulea-statistik/Statistik-utstationering/main/';
 const $=id=>document.getElementById(id);let rows=[],coords={},map,circles,municipalityChart,addressChart,activeAddress='';
-const norm=s=>String(s??'').normalize('NFKC').replace(/\\s+/g,' ').trim();
+const norm=s=>String(s??'').normalize('NFKC').replace(/\s+/g,' ').trim();
 const key=(p,k)=>norm(p)+'|'+norm(k);
-const num=s=>Number(String(s??'').replace(/\\s/g,'').replace(',','.'))||0;
+const num=s=>Number(String(s??'').replace(/\s/g,'').replace(',','.'))||0;
 const count=arr=>arr.reduce((sum,r)=>sum+num(r.Arbetstagare),0);
 const dates=()=>[...new Set(rows.map(r=>r.SnapshotDate))].sort();
 const eachGroup=(data,fn)=>{const m=new Map();data.forEach(r=>{const k=fn(r);if(!m.has(k))m.set(k,[]);m.get(k).push(r)});return m};
