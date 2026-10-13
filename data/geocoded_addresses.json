@@ -173,5 +173,12 @@
     "lat": 65.5799977,
     "lon": 22.1369429,
     "source": "OpenStreetMap Nominatim"
+  },
+  "Stålverket 20 96140 Boden|Boden": {
+    "lat": 65.806966,
+    "lon": 21.78551,
+    "source": "Publicerad adresskoordinat, Ratsit (oberoende kontroll rekommenderas)",
+    "precision": "address_reference",
+    "source_url": "https://www.ratsit.se/5164139726-Eiffage_Genie_Civil_Marine_Sverige_Filial"
   }
 }
