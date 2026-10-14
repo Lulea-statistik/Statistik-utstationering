@@ -1,0 +1,7 @@
+﻿Ursprung;Namn;URL;Status
+portal helperServices.geocode;GaidaLocator_Address;https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer;"Locator annonserad i publik portalmetadata; adressmatchning och nyttjanderätt ej verifierade"
+portal helperServices.geocode;GaidaLocator_Real_Estate_Street;https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Real_Estate_Street/GeocodeServer;"Locator annonserad i publik portalmetadata; adressmatchning och nyttjanderätt ej verifierade"
+portal helperServices.geocode;GaidaLocator_City;https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_City/GeocodeServer;"Locator annonserad i publik portalmetadata; adressmatchning och nyttjanderätt ej verifierade"
+portal helperServices.geocode;GaidaLocator_Real_Estate;https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Real_Estate/GeocodeServer;"Locator annonserad i publik portalmetadata; adressmatchning och nyttjanderätt ej verifierade"
+portal self;Bodens kommun;https://gisportal.boden.se/portal/sharing/portals/self;Portalmetadata åtkomlig
+portal search;GaidaLocator_Address;https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer;"Publikt indexerad tjänst; inte verifierat som öppet adress-API"
