@@ -111,3 +111,13 @@ Observera att den äldre avgränsningen 65,4–66,1 grader nord är för snäv f
 Efter `fallback_boden_municipal_addresses.py` körs nu `promote_boden_municipal_addresses.py`: kandidater med matchat gatunamn **och husnummer**, minst 70 i locator-score och koordinater inom Boden/Luleå läggs i `data/geocoded_addresses.json` med `precision: exact`, käll-URL och match-score. Manuellt kontrollerade koordinater eller redan exakta matchningar skrivs inte över. Därefter återskapas listan över saknade adresser och en kontroll säkerställer att adresserna finns i antingen kartcachen eller granskningskön. Adresser utan säker API-träff, exempelvis Flarkenvägen 15 och Hydrogränd 2, lämnas kvar för granskning. Även Rödkallen 66 kvarstår utan en användbar Luleåposition. För Bodens norra delar tillåter valideringen latitud till 66,45° N.
 
 **Återanvändningsnotering:** Bodens publika locator är tekniskt åtkomlig. Kommunens särskilda villkor för lagring och återpublicering av dess koordinater i projektets öppna datakälla är ännu inte separat bekräftade. Denna import görs enligt projektägarens önskemål; klarlägg villkoren med kommunen och avpublicera vid behov.
+
+## Berikning av offentliga detaljuppgifter (nytt pipeline-steg)
+
+Efter den ordinarie dagliga inläsningen körs `enrich_posting_details.py` automatiskt i `.github/workflows/daily-utstationering.yml`. Programmet hämtar ett begränsat antal offentliga `DetailURL`-sidor från Arbetsmiljöverkets domän och söker **endast** efter explicita strukturerade fält för etableringsland, bransch/tjänstetyp och planerat start- och slutdatum. Beräknad varaktighet härleds bara från två giltiga datum. Resultatet skrivs i `data/posting_details.csv` och återanvänds vid kommande körningar.
+
+- Högst 30 nya URL:er per körning (miljövariabeln `DETAIL_PAGE_LIMIT`) och 1,25 sekunders paus mellan anropen.
+- Inga personnamn, personnummer, telefonnummer, e-postadresser, fria beskrivningar eller rå HTML sparas från detaljsidorna. Fält utan verifierad etikett förblir tomma.
+- `Status=ok` betyder att minst ett tillåtet fält hittats. `fields_unavailable` betyder att den offentliga sidan kunde öppnas men inga godkända fält kunde extraheras. `fetch_failed` innebär misslyckat anrop som kan prövas på nytt.
+- Det ordinarie CSV-formatet och befintliga diagram har inte ändrats. Berikningen är ett separat förberedande dataset, inte en utlovad källa för alla uppgifter.
+- Steget är ett icke-blockerande tillägg så att datainsamlingen fortsätter även om Arbetsmiljöverkets detaljsidor ändras. Den faktiska träffsäkerheten måste valideras mot en fullständig GitHub Actions-körning innan nya webbdiagram byggs.
