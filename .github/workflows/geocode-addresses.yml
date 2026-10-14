@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/geocode-addresses.yml'
       - 'geocode_addresses.py'
+      - 'validate_geocoding.py'
       - 'data/manual_coordinates.csv'
       - 'data/address_source_candidates.csv'
       - 'data/latest.csv'
@@ -26,6 +27,8 @@ jobs:
           python-version: "3.12"
       - name: Geokoda nya adresser med hastighetsbegränsning
         run: python geocode_addresses.py
+      - name: Validera JSON och adressmatchning
+        run: python validate_geocoding.py
       - name: Spara verifierade koordinater
         run: |
           git config user.name "github-actions[bot]"
