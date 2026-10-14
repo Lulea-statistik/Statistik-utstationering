@@ -64,3 +64,16 @@ Adress;Kommun;Latitud;Longitud;Precision;Kalla;Kontrollerad_datum
 Rader utan verifierad källa eller koordinater ska **inte** läggas i den manuella filen. Länkar till Google Maps och Hitta i granskningsfilen är endast för kontroll; deras koordinater ska inte kopieras till den publika filen utan att användningsvillkoren tillåter det.
 
 När filen ändras startar GitHub Actions automatiskt en ny geokodningskörning. Manuell data valideras och ges företräde över tidigare automatiska koordinater. Originalvärden och manuellt angivna uppgifter skrivs inte över i `manual_coordinates.csv`. Om format, precision eller koordinatintervall är fel avbryts körningen i stället för att publicera felaktiga positioner.
+
+## Automatisk fallback för nya och svårgeokodade adresser
+
+Flödet startar vid nya data i `data/latest.csv` eller `data/history.csv`, ändringar i granskningsfilerna, manuellt i GitHub Actions samt veckovis som reserv.
+
+1. Återanvänd tidigare cachade koordinater; verifierade koordinater i `data/manual_coordinates.csv` har alltid företräde.
+2. Nya adresser skickas till Nominatim med full adress, adress/postnummer och gatusökning. Samma gatunamn och korrekt husnummer krävs för klassningen `exact`. Gatupunkter märks `street`.
+3. Misslyckade försök sparas i `data/geocoding_attempts.json`. Automatiska omsökningar sker tidigast efter 1, 2, 4, 8, 16 och därefter högst 30 dagar. Tillfälliga nätverksfel försöks igen nästa dag. Oanvända anrop undviks.
+4. Kvarvarande adresser skrivs till `data/geocoding_review.csv`, sorterad efter senast registrerade antal arbetstagare. Där visas nästa försök, antal dokumenterade kandidatkällor och söklänkar till OpenStreetMap, kommunal karta, Lantmäteriet, Google Maps och Hitta.
+5. Koordinatkandidater i `data/address_source_candidates.csv` används **bara som granskningsunderlag**, aldrig som automatiskt godkända koordinater. Godkända WGS84-adresspunkter läggs i `data/manual_coordinates.csv` med källa, datum och precision.
+6. `data/geocoding_quality_review.csv` granskar även redan geokodade platser med låg eller okänd precision.
+
+Observera att kartwebbplatsernas vanliga sök-URL:er **inte är API:er för automatisk koordinathämtning**. Kommunala/Lantmäteriets API:er kan senare läggas till som separata automatiska källor när behörighet, licens och adressmatchning är kontrollerade. Gör inte webbsideskrapning av Google Maps eller Hitta för återpublicering.
