@@ -86,7 +86,17 @@ function render(){
  drawCharts();
 }
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function chart(id,old,datasets,labelDates){if(old)old.destroy();return new Chart($(id),{type:'line',data:{labels:labelDates,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},scales:{y:{beginAtZero:true,title:{display:true,text:'Antal registrerade arbetstagare'}}},plugins:{legend:{display:true,position:'bottom'}}}})}
+function chart(id,old,datasets,labelDates){
+ if(old)old.destroy();
+ const addressAxis=id==='addressChart';
+ const values=datasets.flatMap(d=>d.data).filter(v=>typeof v==='number'&&Number.isFinite(v));
+ const low=values.length?Math.min(...values):0,high=values.length?Math.max(...values):0;
+ const span=high-low;
+ const pad=span>0?span*.10:Math.max(1,Math.abs(high)*.10);
+ const floor=Math.max(0,Math.floor(low-pad)),ceiling=Math.max(floor+1,Math.ceil(high+pad));
+ const y=addressAxis?{min:floor,max:ceiling,afterBuildTicks:axis=>{axis.ticks=[{value:floor},{value:ceiling}]},ticks:{callback:value=>value===floor||value===ceiling?value:''},title:{display:true,text:'Antal registrerade arbetstagare'}}:{beginAtZero:true,title:{display:true,text:'Antal registrerade arbetstagare'}};
+ return new Chart($(id),{type:'line',data:{labels:labelDates,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},scales:{y},plugins:{legend:{display:true,position:'bottom'}}}});
+}
 function makeSeries(name,values,color){return {label:name,data:values,borderColor:color,backgroundColor:color,borderWidth:2,pointRadius:values.length>45?1:2,spanGaps:false,tension:.15}}
 function drawCharts(){
  const ds=dates(),cols=['#c32834','#d2a52c','#2477a8','#48a174','#8962a3'];
