@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/geocode-addresses.yml'
       - 'geocode_addresses.py'
+      - 'data/manual_coordinates.csv'
   schedule:
     - cron: "30 8 * * 1"
 permissions:
