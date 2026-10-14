@@ -1,6 +1,6 @@
 ﻿Adress;Kommun;Arbetstagare senaste;Precision;Kalla;Matchad plats;Status
-Stålverket 20 96140 Boden;Boden;3263;address_reference;Publicerad adresskoordinat, Ratsit (oberoende kontroll rekommenderas);;"PRIORITET: motstridiga publicerade koordinater, ca 480 m skillnad; kontrollera adresspunkt mot fastighetsposition"
-Svartövägen 22 97437 Luleå;Luleå;242;street;OpenStreetMap Nominatim;Svartövägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 37, Sverige;Granska lägesnoggrannhet
+Stålverket 20 96140 Boden;Boden;3263;address_reference;Publicerad adresskoordinat, Ratsit (oberoende kontroll rekommenderas);;"PRIORITET: Ratsit och Hitta stöder nuvarande adressreferens; TIC visar avvikande fastighetsposition. Ej verifierad arbetsplatsposition."
+Svartövägen 22 97437 Luleå;Luleå;242;street;OpenStreetMap Nominatim;Svartövägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 37, Sverige;PRIORITET: endast gatuposition, husnummer 22 inte verifierat
 Teknikvägen 3 96150 Boden;Boden;44;unknown;OpenStreetMap Nominatim;;Granska lägesnoggrannhet
 Haparandavägen 300 97596 Luleå;Luleå;38;street;OpenStreetMap Nominatim;Haparandavägen, Inibyn, Björsbyn, Luleå kommun, Norrbottens län, 977 55, Sverige;Granska lägesnoggrannhet
 Bullerleden 5 96167 Boden;Boden;26;street;OpenStreetMap Nominatim;Bullerleden, Fagernäs, Boden, Bodens kommun, Norrbottens län, 961 37, Sverige;Granska lägesnoggrannhet
