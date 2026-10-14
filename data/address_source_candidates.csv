@@ -1,0 +1,4 @@
+Adress;Kommun;Kalladress;Kalltyp;Kandidat_lat;Kandidat_lon;Bedomning
+Övre Buddbyn 141 96192 Boden;Boden;https://www.ratsit.se/5592786148-TuCo_AB;Företagsadress;65.88857;21.65834;Publicerad adresspunkt. Granska lagringsvillkor och verifiera i kommunal adresskälla innan import
+Hydrogränd 2 96143 Boden;Boden;https://www.ratsit.se/5569676686-Hydro66_Svenska_AB;Företagsadress;65.8048;21.68386;Adresspunkt. Kontrollera mot fastighetsposition och villkor före import
+Hydrogränd 2 96143 Boden;Boden;https://tic.io/en/fastighet/0c98e8e8-8300-5573-e053-7e44ed8f3a3b;Fastighetsposition;65.8043;21.6843;Skiljer sig från adresskoordinat. Ej automatiskt godkänd
