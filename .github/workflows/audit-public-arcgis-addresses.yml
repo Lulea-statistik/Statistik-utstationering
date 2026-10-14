@@ -17,11 +17,13 @@ jobs:
         run: python audit_public_arcgis_addresses.py
       - name: Prova exakta adressfrågor i Luleås lager 86
         run: python probe_lulea_public_address_layer.py
+      - name: Undersök Bodens publika ArcGIS-locatorer
+        run: python audit_boden_public_locator.py
       - name: Spara granskningsrapport
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/public_arcgis_address_audit.csv data/public_arcgis_address_probe.csv
+          git add data/public_arcgis_address_audit.csv data/public_arcgis_address_probe.csv data/boden_public_locator_audit.csv
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "Update public ArcGIS address layer audit"
           git pull --rebase origin main
