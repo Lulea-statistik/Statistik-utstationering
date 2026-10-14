@@ -44,8 +44,28 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/geocoded_addresses.json data/geocoding_review.csv data/geocoding_quality_review.csv data/geocoding_attempts.json data/municipal_address_candidates.csv data/boden_municipal_address_candidates.csv
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Update geocoded address cache"
-          git pull --rebase origin main
-          git push
+          # On concurrent writes, reload current main and recompute rather than rebasing
+          # generated CSV/JSON outputs (which frequently causes merge conflicts).
+          for attempt in 1 2 3; do
+            git add data/geocoded_addresses.json data/geocoding_review.csv data/geocoding_quality_review.csv data/geocoding_attempts.json data/municipal_address_candidates.csv data/boden_municipal_address_candidates.csv
+            if git diff --cached --quiet; then
+              echo "No geocoding changes to publish"
+              exit 0
+            fi
+            git commit -m "Update geocoded address cache"
+            if git push origin HEAD:main; then
+              echo "Geocoding data published"
+              exit 0
+            fi
+            echo "Remote main advanced; recomputing on latest main (attempt $attempt)"
+            git fetch origin main
+            git reset --hard origin/main
+            python geocode_addresses.py
+            python fallback_lulea_municipal_addresses.py
+            python fallback_boden_municipal_addresses.py
+            python promote_boden_municipal_addresses.py
+            GEOCODE_LIMIT=0 python geocode_addresses.py
+            python validate_geocoding.py
+          done
+          echo "Unable to publish after 3 attempts"
+          exit 1
