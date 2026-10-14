@@ -12,6 +12,7 @@ ROOT = Path("data")
 CACHE = ROOT / "geocoded_addresses.json"
 LATEST = ROOT / "latest.csv"
 HISTORY = ROOT / "history.csv"
+REVIEW = ROOT / "geocoding_review.csv"
 
 def read_rows(path):
     if not path.exists():
