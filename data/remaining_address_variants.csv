@@ -1,0 +1,14 @@
+﻿Originaladress;Kommun;Sokvariant;API_matchning;Latitud;Longitud;Import;Bedömning
+Viktoriavägen 1 97437 Luleå;Luleå;VIKTORIAVÄGEN 1;;;;;Ingen träff
+Viktoriavägen 1 97437 Luleå;Luleå;viktoriavägen 1;;;;;Ingen träff
+Viktoriavägen 1 97437 Luleå;Luleå;VICTORIAVÄGEN 1;;;;;Ingen träff
+Viktoriavägen 1 97437 Luleå;Luleå;VIKTORIAVÄGEN %;;;;;Ingen träff
+Flarkenvägen 15 Boden;Boden;Flarkenvägen 15;;;;;Ingen träff
+Flarkenvägen 15 Boden;Boden;Flarkenvägen 15, 961 92 Boden;;;;;Ingen träff
+Flarkenvägen 15 Boden;Boden;Flarken 15 Boden;;;;;Ingen träff
+Flarkenvägen 15 Boden;Boden;Flarkenvägen Boden;;;;;Ingen träff
+Hydrogränd 2 96143 Boden;Boden;Hydrogränd 2;;;;;Ingen träff
+Hydrogränd 2 96143 Boden;Boden;Hydrogränd 2, 961 43 Boden;Hydrogränd 2, 961 43 Boden;65.804757047237;21.684779582066;Ej importerad;GRANSKA – endast exakt husnummer får markeras som exakt adress
+Hydrogränd 2 96143 Boden;Boden;Hydrogränd Boden;;;;;Ingen träff
+Hydrogränd 2 96143 Boden;Boden;Hydrogränd 1 Boden;;;;;Ingen träff
+Hydrogränd 2 96143 Boden;Boden;Hydrogränd 3 Boden;;;;;Ingen träff
