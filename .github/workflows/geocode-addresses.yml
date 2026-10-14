@@ -12,6 +12,7 @@ on:
       - 'diagnose_unresolved_addresses.py'
       - 'probe_rodkallen_addresses.py'
       - 'promote_rodkallen_exact.py'
+      - 'probe_remaining_address_variants.py'
       - 'data/manual_coordinates.csv'
       - 'data/address_source_candidates.csv'
       - 'data/latest.csv'
@@ -52,6 +53,8 @@ jobs:
           python promote_rodkallen_exact.py
           GEOCODE_LIMIT=0 python geocode_addresses.py
           python validate_geocoding.py
+      - name: Undersök stavningsvarianter för återstående adresser
+        run: python probe_remaining_address_variants.py
       - name: Spara verifierade koordinater
         run: |
           git config user.name "github-actions[bot]"
@@ -59,7 +62,7 @@ jobs:
           # On concurrent writes, reload current main and recompute rather than rebasing
           # generated CSV/JSON outputs (which frequently causes merge conflicts).
           for attempt in 1 2 3; do
-            git add data/geocoded_addresses.json data/geocoding_review.csv data/geocoding_quality_review.csv data/geocoding_attempts.json data/municipal_address_candidates.csv data/boden_municipal_address_candidates.csv data/unresolved_address_diagnostics.csv data/rodkallen_address_probe.csv
+            git add data/geocoded_addresses.json data/geocoding_review.csv data/geocoding_quality_review.csv data/geocoding_attempts.json data/municipal_address_candidates.csv data/boden_municipal_address_candidates.csv data/unresolved_address_diagnostics.csv data/rodkallen_address_probe.csv data/remaining_address_variants.csv
             if git diff --cached --quiet; then
               echo "No geocoding changes to publish"
               exit 0
