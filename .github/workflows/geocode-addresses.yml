@@ -13,6 +13,7 @@ on:
       - 'probe_rodkallen_addresses.py'
       - 'promote_rodkallen_exact.py'
       - 'probe_remaining_address_variants.py'
+      - 'promote_hydrogrand_exact.py'
       - 'data/manual_coordinates.csv'
       - 'data/address_source_candidates.csv'
       - 'data/latest.csv'
@@ -55,6 +56,11 @@ jobs:
           python validate_geocoding.py
       - name: Undersök stavningsvarianter för återstående adresser
         run: python probe_remaining_address_variants.py
+      - name: Godkänn Hydrogränd 2 och uppdatera täckningsgraden
+        run: |
+          python promote_hydrogrand_exact.py
+          GEOCODE_LIMIT=0 python geocode_addresses.py
+          python validate_geocoding.py
       - name: Spara verifierade koordinater
         run: |
           git config user.name "github-actions[bot]"
@@ -79,6 +85,12 @@ jobs:
             python fallback_lulea_municipal_addresses.py
             python fallback_boden_municipal_addresses.py
             python promote_boden_municipal_addresses.py
+            GEOCODE_LIMIT=0 python geocode_addresses.py
+            python diagnose_unresolved_addresses.py
+            python probe_rodkallen_addresses.py
+            python promote_rodkallen_exact.py
+            python probe_remaining_address_variants.py
+            python promote_hydrogrand_exact.py
             GEOCODE_LIMIT=0 python geocode_addresses.py
             python validate_geocoding.py
           done
