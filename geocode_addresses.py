@@ -1,5 +1,6 @@
 """Geokoda nya adresser utan att gissa positioner. WGS84 (EPSG:4326)."""
 import csv
+from datetime import date, timedelta
 import math
 import json
 import os
@@ -16,6 +17,8 @@ HISTORY = ROOT / "history.csv"
 REVIEW = ROOT / "geocoding_review.csv"
 MANUAL = ROOT / "manual_coordinates.csv"
 QUALITY = ROOT / "geocoding_quality_review.csv"
+ATTEMPTS = ROOT / "geocoding_attempts.json"
+CANDIDATES = ROOT / "address_source_candidates.csv"
 
 def read_rows(path):
     if not path.exists():
@@ -119,9 +122,34 @@ def load_manual():
                          "precision": precision, "verified": True, "reviewed_at": checked}
     return verified
 
+def save_json(path, data):
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+
+def candidate_index():
+    by_address = {}
+    for row in read_rows(CANDIDATES):
+        address = normalize(row.get("Adress"))
+        muni = normalize(row.get("Kommun"))
+        if not address or not muni:
+            continue
+        key = address + "|" + muni
+        by_address.setdefault(key, []).append(row)
+    return by_address
+
+def retry_due(item, today):
+    if not item:
+        return True
+    try:
+        return date.fromisoformat(item["next_retry"]) <= today
+    except (KeyError, ValueError, TypeError):
+        return True
+
 def main():
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
     manual = load_manual()
+    attempts = json.loads(ATTEMPTS.read_text(encoding="utf-8")) if ATTEMPTS.exists() else {}
+    candidates = candidate_index()
+    today = date.today()
     cache.update(manual)
     latest_rows = read_rows(LATEST)
     rows = latest_rows + read_rows(HISTORY)
@@ -135,33 +163,48 @@ def main():
     address_list = sorted({(normalize(r.get("Plats")), normalize(r.get("Kommun"))) for r in rows if r.get("Plats") and r.get("Kommun")})
     limit = int(os.environ.get("GEOCODE_LIMIT", "200"))
     tries = 0
-    for place, muni in address_list:
+    pending = sorted(address_list, key=lambda x: (-priority.get(x[0] + "|" + x[1], 0), x[0]))
+    for place, muni in pending:
         key = place + "|" + muni
-        if key in cache:
+        if key in cache or not retry_due(attempts.get(key), today):
             continue
         if tries >= limit:
             break
         tries += 1
+        previous_failures = int(attempts.get(key, {}).get("failures", 0))
         try:
             matched = fetch(place, muni)
             if matched:
                 cache[key] = matched
+                attempts.pop(key, None)
                 print("OK", key)
             else:
-                print("No exact location", key)
+                failures = previous_failures + 1
+                # Failed public-service queries back off exponentially, capped at 30 days.
+                delay = min(30, 2 ** min(failures - 1, 5))
+                attempts[key] = {"failures": failures, "last_attempt": today.isoformat(),
+                                 "next_retry": (today + timedelta(days=delay)).isoformat(),
+                                 "status": "not_found"}
+                print("No address match", key, "retry after", delay, "days")
         except Exception as err:
+            # Temporary outages should be retried tomorrow, without promoting bad positions.
+            attempts[key] = {"failures": previous_failures, "last_attempt": today.isoformat(),
+                             "next_retry": (today + timedelta(days=1)).isoformat(),
+                             "status": "error"}
             print("Lookup failed", key, err)
         time.sleep(1.2)
-    CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    save_json(CACHE, cache)
+    save_json(ATTEMPTS, attempts)
     with REVIEW.open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.writer(handle, delimiter=";")
-        writer.writerow(["Adress", "Kommun", "Arbetstagare senaste", "Status", "OpenStreetMap", "Kommunal karta", "Lantmateriet Min karta", "Google Maps", "Hitta"])
+        writer.writerow(["Adress", "Kommun", "Arbetstagare senaste", "Status", "Nästa automatiska försök", "Antal kandidatkällor", "OpenStreetMap", "Kommunal karta", "Lantmateriet Min karta", "Google Maps", "Hitta"])
         for place, muni in sorted(address_list, key=lambda x: (-priority.get(x[0] + "|" + x[1], 0), x[0])):
             if place + "|" + muni in cache:
                 continue
             query = urllib.parse.quote(place + ", " + muni + ", Sverige")
             writer.writerow([
-                place, muni, int(priority.get(place + "|" + muni, 0)), "Ej geokodad",
+                place, muni, int(priority.get(place + "|" + muni, 0)), "Kandidat att granska" if candidates.get(place + "|" + muni) else "Ej geokodad",
+                attempts.get(place + "|" + muni, {}).get("next_retry", ""), len(candidates.get(place + "|" + muni, [])),
                 "https://www.openstreetmap.org/search?query=" + query,
                 "https://kartor.lulea.se/kommunkarta/" if muni == "Luleå" else "https://gisportal.boden.se/portal/apps/experiencebuilder/experience/?id=8e6928656bba4c108953d59b6fb38523",
                 "https://minkarta.lantmateriet.se/",
