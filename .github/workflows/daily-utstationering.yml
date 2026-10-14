@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "scrape_utstationering.py"
+      - "enrich_posting_details.py"
       - ".github/workflows/daily-utstationering.yml"
   schedule:
     # Kör på svensk lokal tid året runt.
@@ -58,6 +59,13 @@ jobs:
       - name: Hämta Luleå och Boden
         if: steps.run_guard.outputs.should_run == 'true'
         run: python scrape_utstationering.py
+
+      - name: Berika med offentliga uppgifter från detaljsidor
+        if: steps.run_guard.outputs.should_run == 'true'
+        continue-on-error: true
+        env:
+          DETAIL_PAGE_LIMIT: "30"
+        run: python enrich_posting_details.py
 
       - name: Ladda upp debug vid fel
         if: failure() && steps.run_guard.outputs.should_run == 'true'
