@@ -15,6 +15,7 @@ LATEST = ROOT / "latest.csv"
 HISTORY = ROOT / "history.csv"
 REVIEW = ROOT / "geocoding_review.csv"
 MANUAL = ROOT / "manual_coordinates.csv"
+QUALITY = ROOT / "geocoding_quality_review.csv"
 
 def read_rows(path):
     if not path.exists():
@@ -167,6 +168,20 @@ def main():
                 "https://www.google.com/maps/search/?api=1&query=" + query,
                 "https://www.hitta.se/sök?vad=" + query,
             ])
+    with QUALITY.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.writer(handle, delimiter=";")
+        writer.writerow(["Adress", "Kommun", "Arbetstagare senaste", "Precision", "Kalla", "Matchad plats", "Status"])
+        for place, muni in sorted(address_list, key=lambda x: (-priority.get(x[0] + "|" + x[1], 0), x[0])):
+            result = cache.get(place + "|" + muni)
+            if not result:
+                continue
+            precision = result.get("precision", "unknown")
+            if precision == "exact" and result.get("verified"):
+                continue
+            writer.writerow([place, muni, int(priority.get(place + "|" + muni, 0)),
+                             precision, result.get("source", ""), result.get("matched_name", ""),
+                             "Exakt adress behöver oberoende kontroll" if precision == "exact" else "Granska lägesnoggrannhet"])
+    print("Position quality review:", QUALITY)
     print(f"Manual verified coordinates: {len(manual)}")
     print("Review queue:", REVIEW)
     print(f"Coordinates cached: {len(cache)}; checked this run: {tries}")
