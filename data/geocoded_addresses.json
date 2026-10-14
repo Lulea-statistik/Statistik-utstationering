@@ -300,6 +300,13 @@
     "precision": "street",
     "source": "OpenStreetMap Nominatim"
   },
+  "Svedjebergsvägen 8 96140 Boden|Boden": {
+    "lat": 65.8136846,
+    "lon": 21.7529892,
+    "matched_name": "Svedjebergsvägen, Norra Svartbyn, Södra Svartbyn, Bodens kommun, Norrbottens län, 961 40, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
   "Teknikens hus väg 2 97754 Luleå|Luleå": {
     "lat": 65.616861,
     "lon": 22.134119,

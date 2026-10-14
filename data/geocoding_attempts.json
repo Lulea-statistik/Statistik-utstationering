@@ -29,6 +29,12 @@
     "next_retry": "2026-10-15",
     "status": "not_found"
   },
+  "Viktoriavägen 1 97437 Luleå|Luleå": {
+    "failures": 1,
+    "last_attempt": "2026-10-14",
+    "next_retry": "2026-10-15",
+    "status": "not_found"
+  },
   "Övre Buddbyn 141 96192 Boden|Boden": {
     "failures": 1,
     "last_attempt": "2026-10-14",

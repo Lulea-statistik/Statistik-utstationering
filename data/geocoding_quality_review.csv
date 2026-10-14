@@ -1,7 +1,7 @@
 ﻿Adress;Kommun;Arbetstagare senaste;Precision;Kalla;Matchad plats;Status
-Stålverket 20 96140 Boden;Boden;3263;address_reference;Publicerad adresskoordinat, Ratsit (oberoende kontroll rekommenderas);;"PRIORITET: Ratsit och Hitta stöder nuvarande adressreferens; TIC visar avvikande fastighetsposition. Ej verifierad arbetsplatsposition."
-Svartövägen 22 97437 Luleå;Luleå;242;street;OpenStreetMap Nominatim;Svartövägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 37, Sverige;PRIORITET: endast gatuposition, husnummer 22 inte verifierat
-Teknikvägen 3 96150 Boden;Boden;44;unknown;OpenStreetMap Nominatim;;Granska lägesnoggrannhet
+Stålverket 20 96140 Boden;Boden;3274;address_reference;Publicerad adresskoordinat, Ratsit (oberoende kontroll rekommenderas);;"PRIORITET: Ratsit och Hitta stöder nuvarande adressreferens; TIC visar avvikande fastighetsposition. Ej verifierad arbetsplatsposition."
+Svartövägen 22 97437 Luleå;Luleå;241;street;OpenStreetMap Nominatim;Svartövägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 37, Sverige;PRIORITET: endast gatuposition, husnummer 22 inte verifierat
+Teknikvägen 3 96150 Boden;Boden;45;unknown;OpenStreetMap Nominatim;;Granska lägesnoggrannhet
 Haparandavägen 300 97596 Luleå;Luleå;38;street;OpenStreetMap Nominatim;Haparandavägen, Inibyn, Björsbyn, Luleå kommun, Norrbottens län, 977 55, Sverige;Granska lägesnoggrannhet
 Bullerleden 5 96167 Boden;Boden;26;street;OpenStreetMap Nominatim;Bullerleden, Fagernäs, Boden, Bodens kommun, Norrbottens län, 961 37, Sverige;Granska lägesnoggrannhet
 Lavettvägen 1 96143 Boden;Boden;26;street;OpenStreetMap Nominatim;Lavettvägen, Bodsvedjan, Boden, Bodens kommun, Norrbottens län, 961 43, Sverige;Granska lägesnoggrannhet
@@ -17,16 +17,18 @@ Magasinsgatan 13A 97241 Luleå;Luleå;11;street;OpenStreetMap Nominatim;Magasins
 Torpslingan 19A 97347 Luleå;Luleå;11;street;OpenStreetMap Nominatim;Torpslingan, Porsön, Luleå, Luleå kommun, Norrbottens län, 977 51, Sverige;Granska lägesnoggrannhet
 Torpslingan 23A 97347 Luleå;Luleå;11;street;OpenStreetMap Nominatim;Torpslingan, Porsön, Luleå, Luleå kommun, Norrbottens län, 973 47, Sverige;Granska lägesnoggrannhet
 Torpslingan 25A 97347 Luleå;Luleå;11;street;OpenStreetMap Nominatim;Torpslingan, Porsön, Luleå, Luleå kommun, Norrbottens län, 977 51, Sverige;Granska lägesnoggrannhet
+Svartövägen 20 97437 Luleå;Luleå;10;street;OpenStreetMap Nominatim;Svartövägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 37, Sverige;Granska lägesnoggrannhet
 Kärrviolgatan 3 97636 Luleå;Luleå;9;street;OpenStreetMap Nominatim;Kärrviolgatan, Dalbo, Luleå, Luleå kommun, Norrbottens län, 976 36, Sverige;Granska lägesnoggrannhet
-Svartövägen 20 97437 Luleå;Luleå;9;street;OpenStreetMap Nominatim;Svartövägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 37, Sverige;Granska lägesnoggrannhet
 Drottninggatan 4 96135 Boden;Boden;7;street;OpenStreetMap Nominatim;Drottninggatan, Björknäs, Boden, Bodens kommun, Norrbottens län, 961 35, Sverige;Granska lägesnoggrannhet
 Sandnäsetvägen 224 97594 Luleå;Luleå;7;street;OpenStreetMap Nominatim;Sandnäsetvägen, Grannäset, Bälinge, Luleå kommun, Norrbottens län, 954 42, Sverige;Granska lägesnoggrannhet
+Svedjebergsvägen 8 96140 Boden;Boden;6;street;OpenStreetMap Nominatim;Svedjebergsvägen, Norra Svartbyn, Södra Svartbyn, Bodens kommun, Norrbottens län, 961 40, Sverige;Granska lägesnoggrannhet
 Hedenbrovägen 2 96136 Boden;Boden;5;street;OpenStreetMap Nominatim;Hedenbrovägen, Sveafältet, Boden, Bodens kommun, Norrbottens län, 961 36, Sverige;Granska lägesnoggrannhet
 Storhedsvägen 1 97345 Luleå;Luleå;5;unknown;OpenStreetMap Nominatim;;Granska lägesnoggrannhet
 Svedjebergsvägen 10 96140 Boden;Boden;5;street;OpenStreetMap Nominatim;Svedjebergsvägen, Norra Svartbyn, Södra Svartbyn, Bodens kommun, Norrbottens län, 961 40, Sverige;Granska lägesnoggrannhet
 Baldersgatan 1 96133 Boden;Boden;3;street;OpenStreetMap Nominatim;Baldersgatan, Sanden, Boden, Bodens kommun, Norrbottens län, 961 35, Sverige;Granska lägesnoggrannhet
 Handelsvägen 19 97345 Luleå;Luleå;3;unknown;OpenStreetMap Nominatim;;Granska lägesnoggrannhet
 Svartövägen 10 97437 Luleå;Luleå;3;street;OpenStreetMap Nominatim;Svartövägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 37, Sverige;Granska lägesnoggrannhet
+Hantverksvägen 8 95433 Gammelstad;Luleå;2;street;OpenStreetMap Nominatim;Hantverksvägen, Öhemmanet, Gammelstad, Luleå, Luleå kommun, Norrbottens län, 954 32, Sverige;Granska lägesnoggrannhet
 Sjukhusvägen 10 95442 Södra Sunderbyn;Luleå;2;unknown;OpenStreetMap Nominatim;;Granska lägesnoggrannhet
 Västra Varvsgatan 11 97236 Luleå;Luleå;2;unknown;OpenStreetMap Nominatim;;Granska lägesnoggrannhet
 Bangränd 2 96168 Boden;Boden;1;street;OpenStreetMap Nominatim;Bangränd, Torpgärdan, Boden, Bodens kommun, Norrbottens län, 961 73, Sverige;Granska lägesnoggrannhet
@@ -40,7 +42,6 @@ Teknikvägen 13 96150 Boden;Boden;1;street;OpenStreetMap Nominatim;Teknikvägen,
 Uddebovägen 1 97437 Luleå;Luleå;1;street;OpenStreetMap Nominatim;Uddebovägen, Örnäset, Luleå, Luleå kommun, Norrbottens län, 974 36, Sverige;Granska lägesnoggrannhet
 Bodenvägen 405 95442 Södra Sunderbyn;Luleå;0;street;OpenStreetMap Nominatim;Gamla Bodenvägen, Kvarnronningen, Södra Sunderbyn, Luleå kommun, Norrbottens län, 942 41, Sverige;Granska lägesnoggrannhet
 Brogatan 32 96164 Boden;Boden;0;street;OpenStreetMap Nominatim;Brogatan, Björknäs, Boden, Bodens kommun, Norrbottens län, 961 64, Sverige;Granska lägesnoggrannhet
-Hantverksvägen 8 95433 Gammelstad;Luleå;0;street;OpenStreetMap Nominatim;Hantverksvägen, Öhemmanet, Gammelstad, Luleå, Luleå kommun, Norrbottens län, 954 32, Sverige;Granska lägesnoggrannhet
 Holmarvägen 153 97598 Luleå;Luleå;0;street;OpenStreetMap Nominatim;Holmarvägen, Börjelslandet, Luleå kommun, Norrbottens län, 975 98, Sverige;Granska lägesnoggrannhet
 Lejdevägen 10 97596 Luleå;Luleå;0;unknown;OpenStreetMap Nominatim;;Granska lägesnoggrannhet
 Långbackavägen 10 97595 Luleå;Luleå;0;street;OpenStreetMap Nominatim;Långbackavägen, Långbacken, Måttsund, Luleå kommun, Norrbottens län, 975 92, Sverige;Granska lägesnoggrannhet
