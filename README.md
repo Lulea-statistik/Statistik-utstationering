@@ -43,3 +43,24 @@ GitHub Actions använder UTC. 04:15 UTC motsvarar 06:15 svensk sommartid och 05:
 ## Viktig felsäkring
 
 Skriptet skriver inte en tom dagsfil om sidan ändras eller parsningen misslyckas. I stället misslyckas workflowen och sparar screenshot + HTML som ett debug-artifact i GitHub Actions.
+
+## Manuell kontroll av adresser som saknar koordinater
+
+Efter geokodningskörningen finns `data/geocoding_review.csv` med adresser som saknar position samt länkar för manuell kontroll.
+
+Spara manuellt verifierade positioner i **`data/manual_coordinates.csv`** (semikolonseparerad UTF-8) med kolumnerna:
+
+```csv
+Adress;Kommun;Latitud;Longitud;Precision;Kalla;Kontrollerad_datum
+```
+
+- **Adress**: kopiera exakt från granskningsfilen (inklusive postnummer och ort).
+- **Kommun**: `Luleå` eller `Boden`.
+- **Latitud/Longitud**: decimalgrader i **EPSG:4326**, använd punkt som decimaltecken i CSV. Förväxla inte med SWEREF 99 TM (EPSG:3006) eller Lantmäteriets kartvisning.
+- **Precision**: `exact` (kontrollerat husnummer), `street` (gatans ungefärliga position), `approximate` (annan osäker position). Ange aldrig `exact` utan kontroll.
+- **Kalla**: namn/URL till den källa som faktiskt ger rätt att använda och lagra koordinaten.
+- **Kontrollerad_datum**: exempelvis `2026-10-14`.
+
+Rader utan verifierad källa eller koordinater ska **inte** läggas i den manuella filen. Länkar till Google Maps och Hitta i granskningsfilen är endast för kontroll; deras koordinater ska inte kopieras till den publika filen utan att användningsvillkoren tillåter det.
+
+När filen ändras startar GitHub Actions automatiskt en ny geokodningskörning. Manuell data valideras och ges företräde över tidigare automatiska koordinater. Originalvärden och manuellt angivna uppgifter skrivs inte över i `manual_coordinates.csv`. Om format, precision eller koordinatintervall är fel avbryts körningen i stället för att publicera felaktiga positioner.
