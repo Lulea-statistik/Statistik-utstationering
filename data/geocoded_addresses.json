@@ -225,6 +225,15 @@
     "precision": "street",
     "source": "OpenStreetMap Nominatim"
   },
+  "Rödkallen 66 97592 Luleå|Luleå": {
+    "lat": 65.31739810939953,
+    "lon": 22.36528906846192,
+    "matched_name": "RÖDKALLEN 66",
+    "precision": "exact",
+    "source": "Luleå kommun ArcGIS adresskarta lager 86",
+    "source_url": "https://kartportal.lulea.se/server/rest/services/adresskarta/MapServer/86",
+    "verification": "municipal_address_match"
+  },
   "Sandnäsetvägen 224 97594 Luleå|Luleå": {
     "lat": 65.6428128,
     "lon": 21.9032873,
