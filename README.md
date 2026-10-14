@@ -95,3 +95,7 @@ python prepare_official_address_candidates.py /saker/plats/oppna_adresspunkter_w
 ```
 
 Ett framtida automatiskt ArcGIS-fallbacksteg får aktiveras först när vi kan verifiera en publik `FeatureServer`- eller sökbar `MapServer`-tjänst med korrekt kommun, gatunamn, husnummer, koordinatsystem och tillåtna nyttjandevillkor. Annars fortsätter den befintliga prioriterade granskningskön.
+
+### Automatisk kommunal fallback för Luleå (granskningsläge)
+
+Efter den vanliga OSM-geokodningen körs `fallback_lulea_municipal_addresses.py` automatiskt i samma GitHub Actions-flöde. Det söker endast Luleåadresser som inte redan har koordinater märkta `exact`. Gatunamn och husnummer matchas mot Luleås publika ArcGIS REST-lager `adresskarta/MapServer/86`. Sökningar sker adressvis, kontrollerar exakt matchning, en enda träff och WGS84-koordinater inom regionen. Rapporten `data/municipal_address_candidates.csv` redovisar nya kandidater och sökfel även för framtida adresser. Ingen koordinat i rapporten förs automatiskt över till kartans produktionscache eftersom rätt till lagring och offentlig återpublicering ännu inte verifierats. Boden hanteras fortsatt med OSM och den manuella granskningskön tills ett motsvarande öppet kommunalt adress-API identifierats.
