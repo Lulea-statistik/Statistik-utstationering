@@ -6,6 +6,9 @@ on:
       - '.github/workflows/geocode-addresses.yml'
       - 'geocode_addresses.py'
       - 'data/manual_coordinates.csv'
+      - 'data/address_source_candidates.csv'
+      - 'data/latest.csv'
+      - 'data/history.csv'
   schedule:
     - cron: "30 8 * * 1"
 permissions:
@@ -27,7 +30,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/geocoded_addresses.json data/geocoding_review.csv data/geocoding_quality_review.csv
+          git add data/geocoded_addresses.json data/geocoding_review.csv data/geocoding_quality_review.csv data/geocoding_attempts.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "Update geocoded address cache"
           git pull --rebase origin main
