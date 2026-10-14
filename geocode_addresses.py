@@ -26,15 +26,25 @@ def normalize(s):
     return re.sub(r"\s+", " ", str(s or "")).strip()
 
 def fetch(place, municipality):
-    """Find exact address first, otherwise a marked approximate street location."""
-    postal = re.search(r"\b\d{5}\b", place)
-    street = re.sub(r"\s+\d{5}\b.*$", "", place).strip()
-    # Municipality can be absent in provider display name: validate by postcode or local area.
-    queries = [
-        re.sub(r"\s+\d{5}\b", "", place).strip() + ", Sweden",
-        street + ", " + municipality + ", Sweden",
-    ]
-    for i, query in enumerate(dict.fromkeys(queries)):
+    """Search exact house number, then a distinctly labelled street-level fallback."""
+    postal_match = re.search(r"\b(\d{5})\b", place)
+    postal = postal_match.group(1) if postal_match else ""
+    without_postal = re.sub(r"\s+\d{5}\b.*$", "", place).strip()
+    house_match = re.match(r"^(.*?)\s+(\d+\s*[A-Za-zÅÄÖåäö]?)$", without_postal)
+    street = house_match.group(1).strip() if house_match else without_postal
+    house = re.sub(r"\s+", "", house_match.group(2)).lower() if house_match else ""
+    if not street:
+        return None
+    # Each street-level search omits the house number. Never label a street as exact.
+    queries = [(without_postal + ", " + municipality + ", Sverige", "house")]
+    if postal:
+        queries.append((without_postal + ", " + postal + ", Sverige", "house"))
+    queries.append((street + ", " + municipality + ", Sverige", "street"))
+    seen = set()
+    for query, mode in queries:
+        if query in seen:
+            continue
+        seen.add(query)
         url = "https://nominatim.openstreetmap.org/search?" + urllib.parse.urlencode({
             "q": query, "format": "json", "limit": "8",
             "countrycodes": "se", "addressdetails": "1"
@@ -47,25 +57,33 @@ def fetch(place, municipality):
             matches = json.load(reply)
         for match in matches:
             address = match.get("address") or {}
-            display = normalize(match.get("display_name")).lower()
-            full = " ".join(str(x) for x in address.values()).lower() + " " + display
-            # Reject unrelated addresses. Require municipality or matching postal code.
-            zip_code = re.sub(r"\s+", "", address.get("postcode", ""))
-            valid_place = municipality.lower() in full or (postal and postal.group() == zip_code)
-            if not valid_place:
-                continue
             lat, lon = float(match["lat"]), float(match["lon"])
             if not (65.4 <= lat <= 66.1 and 21.1 <= lon <= 23.3):
                 continue
-            kind = match.get("type")
-            if kind in ("administrative", "city", "town", "village", "residential"):
+            full = (" ".join(str(v) for v in address.values()) + " " + match.get("display_name", "")).casefold()
+            postcode = re.sub(r"\s+", "", address.get("postcode", ""))
+            if municipality.casefold() not in full and not (postal and postal == postcode):
                 continue
-            exact = bool(address.get("house_number")) and i == 0
-            if i == 1 and kind not in ("road", "residential", "pedestrian", "service", "tertiary", "unclassified"):
+            # Make sure the returned street is the one requested; municipality alone is insufficient.
+            names = [address.get(n, "") for n in ("road", "pedestrian", "residential", "footway", "path")]
+            names.append(match.get("name", ""))
+            def canonical(v):
+                return re.sub(r"[^\w]", "", normalize(v).casefold())
+            if canonical(street) not in {canonical(n) for n in names if n}:
                 continue
-            return {"lat": lat, "lon": lon, "source": "OpenStreetMap Nominatim",
-                    "precision": "exact" if exact else "street",
-                    "matched_name": match.get("display_name", "")}
+            found_house = re.sub(r"\s+", "", str(address.get("house_number", ""))).lower()
+            exact = mode == "house" and bool(house) and house == found_house
+            if mode == "house" and found_house and not exact:
+                continue
+            if mode == "street" and found_house:
+                continue
+            if not exact and match.get("type") in ("administrative", "city", "town", "village"):
+                continue
+            return {
+                "lat": lat, "lon": lon, "source": "OpenStreetMap Nominatim",
+                "precision": "exact" if exact else "street",
+                "matched_name": match.get("display_name", "")
+            }
         time.sleep(1.2)
     return None
 
