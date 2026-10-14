@@ -10,6 +10,7 @@ on:
       - 'promote_boden_municipal_addresses.py'
       - 'validate_geocoding.py'
       - 'diagnose_unresolved_addresses.py'
+      - 'probe_rodkallen_addresses.py'
       - 'data/manual_coordinates.csv'
       - 'data/address_source_candidates.csv'
       - 'data/latest.csv'
@@ -43,6 +44,8 @@ jobs:
         run: python validate_geocoding.py
       - name: Analysera adresser som fortfarande saknar koordinater
         run: python diagnose_unresolved_addresses.py
+      - name: Testa Rödkallen 66 med skiftläge och närliggande husnummer
+        run: python probe_rodkallen_addresses.py
       - name: Spara verifierade koordinater
         run: |
           git config user.name "github-actions[bot]"
@@ -50,7 +53,7 @@ jobs:
           # On concurrent writes, reload current main and recompute rather than rebasing
           # generated CSV/JSON outputs (which frequently causes merge conflicts).
           for attempt in 1 2 3; do
-            git add data/geocoded_addresses.json data/geocoding_review.csv data/geocoding_quality_review.csv data/geocoding_attempts.json data/municipal_address_candidates.csv data/boden_municipal_address_candidates.csv data/unresolved_address_diagnostics.csv
+            git add data/geocoded_addresses.json data/geocoding_review.csv data/geocoding_quality_review.csv data/geocoding_attempts.json data/municipal_address_candidates.csv data/boden_municipal_address_candidates.csv data/unresolved_address_diagnostics.csv data/rodkallen_address_probe.csv
             if git diff --cached --quiet; then
               echo "No geocoding changes to publish"
               exit 0
