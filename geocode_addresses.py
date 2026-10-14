@@ -94,7 +94,7 @@ def load_manual():
             raise ValueError(f"Manual row {row_number}: Precision must be exact, street or approximate")
         source = normalize(row.get("Kalla"))
         checked = normalize(row.get("Kontrollerad_datum"))
-        if not source or not re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", checked):
+        if not source or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", checked):
             raise ValueError(f"Manual row {row_number}: source and YYYY-MM-DD review date required")
         verified[key] = {"lat": lat, "lon": lon, "source": source,
                          "precision": precision, "verified": True, "reviewed_at": checked}
