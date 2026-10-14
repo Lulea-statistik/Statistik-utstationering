@@ -123,7 +123,7 @@ def load_manual():
     return verified
 
 def save_json(path, data):
-    path.write_text(json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + "\\n", encoding="utf-8")
+    path.write_text(json.dumps(data, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 def candidate_index():
     by_address = {}
