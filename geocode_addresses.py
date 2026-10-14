@@ -25,11 +25,11 @@ def normalize(s):
 
 def fetch(place, municipality):
     """Find exact address first, otherwise a marked approximate street location."""
-    postal = re.search(r"\\b\\d{5}\\b", place)
-    street = re.sub(r"\\s+\\d{5}\\b.*$", "", place).strip()
+    postal = re.search(r"\b\d{5}\b", place)
+    street = re.sub(r"\s+\d{5}\b.*$", "", place).strip()
     # Municipality can be absent in provider display name: validate by postcode or local area.
     queries = [
-        re.sub(r"\\s+\\d{5}\\b", "", place).strip() + ", Sweden",
+        re.sub(r"\s+\d{5}\b", "", place).strip() + ", Sweden",
         street + ", " + municipality + ", Sweden",
     ]
     for i, query in enumerate(dict.fromkeys(queries)):
@@ -48,7 +48,7 @@ def fetch(place, municipality):
             display = normalize(match.get("display_name")).lower()
             full = " ".join(str(x) for x in address.values()).lower() + " " + display
             # Reject unrelated addresses. Require municipality or matching postal code.
-            zip_code = re.sub(r"\\s+", "", address.get("postcode", ""))
+            zip_code = re.sub(r"\s+", "", address.get("postcode", ""))
             valid_place = municipality.lower() in full or (postal and postal.group() == zip_code)
             if not valid_place:
                 continue
