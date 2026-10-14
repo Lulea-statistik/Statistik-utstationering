@@ -104,7 +104,15 @@ def main():
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
     manual = load_manual()
     cache.update(manual)
-    rows = read_rows(LATEST) + read_rows(HISTORY)
+    latest_rows = read_rows(LATEST)
+    rows = latest_rows + read_rows(HISTORY)
+    priority = {}
+    for r in latest_rows:
+        k = normalize(r.get("Plats")) + "|" + normalize(r.get("Kommun"))
+        try:
+            priority[k] = priority.get(k, 0) + float(str(r.get("Arbetstagare") or "0").replace(",", "."))
+        except ValueError:
+            pass
     address_list = sorted({(normalize(r.get("Plats")), normalize(r.get("Kommun"))) for r in rows if r.get("Plats") and r.get("Kommun")})
     limit = int(os.environ.get("GEOCODE_LIMIT", "200"))
     tries = 0
@@ -128,15 +136,15 @@ def main():
     CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     with REVIEW.open("w", encoding="utf-8-sig", newline="") as handle:
         writer = csv.writer(handle, delimiter=";")
-        writer.writerow(["Adress", "Kommun", "Status", "OpenStreetMap", "Lulea kommunkarta", "Lantmateriet Min karta", "Google Maps", "Hitta"])
-        for place, muni in address_list:
+        writer.writerow(["Adress", "Kommun", "Arbetstagare senaste", "Status", "OpenStreetMap", "Kommunal karta", "Lantmateriet Min karta", "Google Maps", "Hitta"])
+        for place, muni in sorted(address_list, key=lambda x: (-priority.get(x[0] + "|" + x[1], 0), x[0])):
             if place + "|" + muni in cache:
                 continue
             query = urllib.parse.quote(place + ", " + muni + ", Sverige")
             writer.writerow([
-                place, muni, "Ej geokodad",
+                place, muni, int(priority.get(place + "|" + muni, 0)), "Ej geokodad",
                 "https://www.openstreetmap.org/search?query=" + query,
-                "https://kartor.lulea.se/kommunkarta/" if muni == "Luleå" else "",
+                "https://kartor.lulea.se/kommunkarta/" if muni == "Luleå" else "https://gisportal.boden.se/",
                 "https://minkarta.lantmateriet.se/",
                 "https://www.google.com/maps/search/?api=1&query=" + query,
                 "https://www.hitta.se/sök?vad=" + query,
