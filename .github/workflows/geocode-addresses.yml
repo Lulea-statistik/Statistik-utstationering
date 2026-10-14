@@ -11,6 +11,7 @@ on:
       - 'validate_geocoding.py'
       - 'diagnose_unresolved_addresses.py'
       - 'probe_rodkallen_addresses.py'
+      - 'promote_rodkallen_exact.py'
       - 'data/manual_coordinates.csv'
       - 'data/address_source_candidates.csv'
       - 'data/latest.csv'
@@ -46,6 +47,11 @@ jobs:
         run: python diagnose_unresolved_addresses.py
       - name: Testa Rödkallen 66 med skiftläge och närliggande husnummer
         run: python probe_rodkallen_addresses.py
+      - name: Använd exakt Rödkallen 66-träff i kartan
+        run: |
+          python promote_rodkallen_exact.py
+          GEOCODE_LIMIT=0 python geocode_addresses.py
+          python validate_geocoding.py
       - name: Spara verifierade koordinater
         run: |
           git config user.name "github-actions[bot]"
