@@ -1,5 +1,6 @@
 """Geokoda nya adresser utan att gissa positioner. WGS84 (EPSG:4326)."""
 import csv
+import math
 import json
 import os
 import re
@@ -13,6 +14,7 @@ CACHE = ROOT / "geocoded_addresses.json"
 LATEST = ROOT / "latest.csv"
 HISTORY = ROOT / "history.csv"
 REVIEW = ROOT / "geocoding_review.csv"
+MANUAL = ROOT / "manual_coordinates.csv"
 
 def read_rows(path):
     if not path.exists():
@@ -67,8 +69,41 @@ def fetch(place, municipality):
         time.sleep(1.2)
     return None
 
+def load_manual():
+    """Load manually checked WGS84 positions; refuse ambiguous/invalid entries."""
+    verified = {}
+    for row_number, row in enumerate(read_rows(MANUAL), start=2):
+        place = normalize(row.get("Adress"))
+        muni = normalize(row.get("Kommun"))
+        if not place and not muni:
+            continue
+        if muni not in ("Luleå", "Boden") or not place:
+            raise ValueError(f"Manual row {row_number}: invalid address/municipality")
+        key = place + "|" + muni
+        if key in verified:
+            raise ValueError(f"Manual row {row_number}: duplicate {key}")
+        try:
+            lat = float(str(row.get("Latitud", "")).replace(",", "."))
+            lon = float(str(row.get("Longitud", "")).replace(",", "."))
+        except ValueError as exc:
+            raise ValueError(f"Manual row {row_number}: invalid coordinates") from exc
+        if not math.isfinite(lat) or not math.isfinite(lon) or not (65.4 <= lat <= 66.1 and 21.1 <= lon <= 23.3):
+            raise ValueError(f"Manual row {row_number}: coordinates out of accepted range")
+        precision = normalize(row.get("Precision")).lower()
+        if precision not in ("exact", "street", "approximate"):
+            raise ValueError(f"Manual row {row_number}: Precision must be exact, street or approximate")
+        source = normalize(row.get("Kalla"))
+        checked = normalize(row.get("Kontrollerad_datum"))
+        if not source or not re.fullmatch(r"\\d{4}-\\d{2}-\\d{2}", checked):
+            raise ValueError(f"Manual row {row_number}: source and YYYY-MM-DD review date required")
+        verified[key] = {"lat": lat, "lon": lon, "source": source,
+                         "precision": precision, "verified": True, "reviewed_at": checked}
+    return verified
+
 def main():
     cache = json.loads(CACHE.read_text(encoding="utf-8")) if CACHE.exists() else {}
+    manual = load_manual()
+    cache.update(manual)
     rows = read_rows(LATEST) + read_rows(HISTORY)
     address_list = sorted({(normalize(r.get("Plats")), normalize(r.get("Kommun"))) for r in rows if r.get("Plats") and r.get("Kommun")})
     limit = int(os.environ.get("GEOCODE_LIMIT", "200"))
@@ -106,6 +141,7 @@ def main():
                 "https://www.google.com/maps/search/?api=1&query=" + query,
                 "https://www.hitta.se/sök?vad=" + query,
             ])
+    print(f"Manual verified coordinates: {len(manual)}")
     print("Review queue:", REVIEW)
     print(f"Coordinates cached: {len(cache)}; checked this run: {tries}")
 
