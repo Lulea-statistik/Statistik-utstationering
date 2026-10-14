@@ -144,7 +144,7 @@ def main():
             writer.writerow([
                 place, muni, int(priority.get(place + "|" + muni, 0)), "Ej geokodad",
                 "https://www.openstreetmap.org/search?query=" + query,
-                "https://kartor.lulea.se/kommunkarta/" if muni == "Luleå" else "https://gisportal.boden.se/",
+                "https://kartor.lulea.se/kommunkarta/" if muni == "Luleå" else "https://gisportal.boden.se/portal/apps/experiencebuilder/experience/?id=8e6928656bba4c108953d59b6fb38523",
                 "https://minkarta.lantmateriet.se/",
                 "https://www.google.com/maps/search/?api=1&query=" + query,
                 "https://www.hitta.se/sök?vad=" + query,
