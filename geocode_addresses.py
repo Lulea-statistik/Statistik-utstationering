@@ -180,7 +180,9 @@ def main():
                 continue
             status = "Exakt adress behöver oberoende kontroll" if precision == "exact" else "Granska lägesnoggrannhet"
             if place == "Stålverket 20 96140 Boden" and muni == "Boden":
-                status = "PRIORITET: motstridiga publicerade koordinater, ca 480 m skillnad; kontrollera adresspunkt mot fastighetsposition"
+                status = "PRIORITET: Ratsit och Hitta stöder nuvarande adressreferens; TIC visar avvikande fastighetsposition. Ej verifierad arbetsplatsposition."
+            if place == "Svartövägen 22 97437 Luleå" and muni == "Luleå":
+                status = "PRIORITET: endast gatuposition, husnummer 22 inte verifierat"
             writer.writerow([place, muni, int(priority.get(place + "|" + muni, 0)),
                              precision, result.get("source", ""), result.get("matched_name", ""), status])
     print("Position quality review:", QUALITY)
