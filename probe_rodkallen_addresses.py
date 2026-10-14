@@ -4,6 +4,8 @@ Review-only: neighboring house numbers are not the requested address.
 """
 import csv
 import json
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
@@ -15,11 +17,19 @@ def fetch(where,limit=100):
         "returnGeometry":"true","outSR":"4326","resultRecordCount":limit})
     request=urllib.request.Request(ENDPOINT+"?"+params,headers={
         "User-Agent":"LuleaStatistikRödkallenProbe/1.0 (https://github.com/Lulea-statistik/Statistik-utstationering)"})
-    with urllib.request.urlopen(request,timeout=30) as result:
-        payload=json.load(result)
-    if payload.get("error"):
-        raise ValueError(str(payload["error"]))
-    return payload.get("features") or []
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(request,timeout=30) as result:
+                payload=json.load(result)
+            if payload.get("error"):
+                raise ValueError(str(payload["error"]))
+            return payload.get("features") or []
+        except (urllib.error.HTTPError,urllib.error.URLError,TimeoutError,ValueError) as exc:
+            if attempt==2:
+                print("ArcGIS Rödkallen query failed, preserving the review queue:",where,str(exc))
+                return None
+            time.sleep(1.5*(attempt+1))
+    return None
 def checked(feature):
     geometry=feature.get("geometry") or {}
     lat,lon=geometry.get("y"),geometry.get("x")
@@ -29,7 +39,7 @@ def main():
     rows=[]
     exact_match=False
     for address in ("RÖDKALLEN 66","rödkallen 66"):
-        for feature in fetch("ADRESS = '"+address+"'"):
+        for feature in (fetch("ADRESS = '"+address+"'") or []):
             name=str((feature.get("attributes") or {}).get("ADRESS",""))
             geo=feature.get("geometry") or {}
             exact=name.casefold()==address.casefold() and checked(feature)
@@ -38,7 +48,7 @@ def main():
                 "Exakt adress med giltig WGS84-punkt" if exact else "Exakt textsökning men koordinat behöver granskas"])
     # One bounded API query covers every requested neighboring number. Avoid 60 calls.
     candidates=[]
-    for feature in fetch("UPPER(ADRESS) LIKE 'RÖDKALLEN %'",100):
+    for feature in (fetch("UPPER(ADRESS) LIKE 'RÖDKALLEN %'",100) or []):
         name=str((feature.get("attributes") or {}).get("ADRESS",""))
         parts=name.upper().split()
         if len(parts)!=2 or parts[0]!="RÖDKALLEN" or not parts[1].isdigit():
