@@ -112,6 +112,14 @@
     "lon": 21.9314841,
     "source": "OpenStreetMap Nominatim"
   },
+  "Småbåtsgatan 1 97235 Luleå|Luleå": {
+    "lat": 65.5811,
+    "lon": 22.1605,
+    "precision": "approximate",
+    "reviewed_at": "2026-10-14",
+    "source": "https://tic.io/sv/fastighet/909a6a88-b9c3-90ec-e040-ed8f66444c3f",
+    "verified": true
+  },
   "Storhedsvägen 1 97345 Luleå|Luleå": {
     "lat": 65.6187246,
     "lon": 22.0414777,
@@ -158,6 +166,14 @@
     "matched_name": "Svedjebergsvägen, Norra Svartbyn, Södra Svartbyn, Bodens kommun, Norrbottens län, 961 40, Sverige",
     "precision": "street",
     "source": "OpenStreetMap Nominatim"
+  },
+  "Teknikens hus väg 2 97754 Luleå|Luleå": {
+    "lat": 65.616861,
+    "lon": 22.134119,
+    "precision": "exact",
+    "reviewed_at": "2026-10-14",
+    "source": "https://www.radiomuseum.org/dsp_museum_nearly.cfm?museum_id=24689",
+    "verified": true
   },
   "Teknikvägen 1 97347 Luleå|Luleå": {
     "lat": 65.6132059,
