@@ -62,7 +62,7 @@ def fetch(place, municipality):
         for match in matches:
             address = match.get("address") or {}
             lat, lon = float(match["lat"]), float(match["lon"])
-            if not (65.4 <= lat <= 66.45 and 21.0 <= lon <= 23.3):
+            if not (65.2 <= lat <= 66.45 and 21.0 <= lon <= 23.3):
                 continue
             full = (" ".join(str(v) for v in address.values()) + " " + match.get("display_name", "")).casefold()
             postcode = re.sub(r"\s+", "", address.get("postcode", ""))
