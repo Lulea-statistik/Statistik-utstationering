@@ -46,6 +46,7 @@ Uddebovägen 1 97437 Luleå;Luleå;1;street;OpenStreetMap Nominatim;Uddebovägen
 Bodenvägen 405 95442 Södra Sunderbyn;Luleå;0;street;OpenStreetMap Nominatim;Gamla Bodenvägen, Kvarnronningen, Södra Sunderbyn, Luleå kommun, Norrbottens län, 942 41, Sverige;Granska lägesnoggrannhet
 Brogatan 32 96164 Boden;Boden;0;street;OpenStreetMap Nominatim;Brogatan, Björknäs, Boden, Bodens kommun, Norrbottens län, 961 64, Sverige;Granska lägesnoggrannhet
 Holmarvägen 153 97598 Luleå;Luleå;0;street;OpenStreetMap Nominatim;Holmarvägen, Börjelslandet, Luleå kommun, Norrbottens län, 975 98, Sverige;Granska lägesnoggrannhet
+Hydrogränd 2 96143 Boden;Boden;0;exact;Bodens kommun, GaidaLocator_Address/GeocodeServer;Hydrogränd 2, 961 43 Boden;Exakt adress behöver oberoende kontroll
 Lejdevägen 10 97596 Luleå;Luleå;0;unknown;OpenStreetMap Nominatim;;Granska lägesnoggrannhet
 Långbackavägen 10 97595 Luleå;Luleå;0;street;OpenStreetMap Nominatim;Långbackavägen, Långbacken, Måttsund, Luleå kommun, Norrbottens län, 975 92, Sverige;Granska lägesnoggrannhet
 Långnäsvägen 30 97593 Luleå;Luleå;0;street;OpenStreetMap Nominatim;Långnäsvägen, Rågholmen, Alvik, Luleå kommun, Norrbottens län, 975 93, Sverige;Granska lägesnoggrannhet

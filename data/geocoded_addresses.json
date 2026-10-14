@@ -134,6 +134,15 @@
     "precision": "street",
     "source": "OpenStreetMap Nominatim"
   },
+  "Hydrogränd 2 96143 Boden|Boden": {
+    "lat": 65.804757047237,
+    "lon": 21.684779582066,
+    "matched_name": "Hydrogränd 2, 961 43 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
+  },
   "Kungsgatan 41 96134 Boden|Boden": {
     "lat": 65.824492024168,
     "lon": 21.691965163944,
