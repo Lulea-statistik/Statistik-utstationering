@@ -91,6 +91,22 @@ def main():
             print("Lookup failed", key, err)
         time.sleep(1.2)
     CACHE.write_text(json.dumps(cache, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    with REVIEW.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.writer(handle, delimiter=";")
+        writer.writerow(["Adress", "Kommun", "Status", "OpenStreetMap", "Lulea kommunkarta", "Lantmateriet Min karta", "Google Maps", "Hitta"])
+        for place, muni in address_list:
+            if place + "|" + muni in cache:
+                continue
+            query = urllib.parse.quote(place + ", " + muni + ", Sverige")
+            writer.writerow([
+                place, muni, "Ej geokodad",
+                "https://www.openstreetmap.org/search?query=" + query,
+                "https://kartor.lulea.se/kommunkarta/" if muni == "Luleå" else "",
+                "https://minkarta.lantmateriet.se/",
+                "https://www.google.com/maps/search/?api=1&query=" + query,
+                "https://www.hitta.se/sök?vad=" + query,
+            ])
+    print("Review queue:", REVIEW)
     print(f"Coordinates cached: {len(cache)}; checked this run: {tries}")
 
 if __name__ == "__main__":
