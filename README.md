@@ -76,16 +76,22 @@ Flödet startar vid nya data i `data/latest.csv` eller `data/history.csv`, ändr
 5. Koordinatkandidater i `data/address_source_candidates.csv` används **bara som granskningsunderlag**, aldrig som automatiskt godkända koordinater. Godkända WGS84-adresspunkter läggs i `data/manual_coordinates.csv` med källa, datum och precision.
 6. `data/geocoding_quality_review.csv` granskar även redan geokodade platser med låg eller okänd precision.
 
-Observera att kartwebbplatsernas vanliga sök-URL:er **inte är API:er för automatisk koordinathämtning**. Kommunala/Lantmäteriets API:er kan senare läggas till som separata automatiska källor när behörighet, licens och adressmatchning är kontrollerade. Gör inte webbsideskrapning av Google Maps eller Hitta för återpublicering.
+Observera att kartwebbplatsernas vanliga sök-URL:er **inte är API:er för automatisk koordinathämtning**. Öppet publicerade kommunala adress-API:er kan senare läggas till som separata automatiska källor när behörighet, licens och adressmatchning är kontrollerade. Gör inte webbsideskrapning av Google Maps eller Hitta för återpublicering.
 
-### Officiella svenska adresspunkter (förberedd import, ej aktiv API-koppling)
+### Publika adresskällor som alternativ till OpenStreetMap
 
-Lantmäteriets **Belägenhetsadress Nedladdning, vektor** är ett möjligt nästa steg: https://geotorget.lantmateriet.se/geodataprodukter/belagenhetsadress-nedladdning-vektor-api . Avgiftsfri produkt, men **behörighet och juridisk prövning krävs**. Kontrollera även villkor för vidarepublicering av koordinater innan export används.
+Inga interna SQL-servrar och ingen tjänst från Lantmäteriets Geotorget används i denna lösning.
 
-Efter beviljad åtkomst kan en behörig användare exportera de relevanta adresspunkterna till semikolonavgränsad CSV med kolumnerna `Adress;Kommun;Latitud;Longitud;Kalla`. Koordinaterna **måste vara transformerade till WGS84, EPSG:4326** innan skriptet körs.
+**Luleå:** Den öppet åtkomliga kartportalen finns på https://kartportal.lulea.se/portal/ . Kommunens publika `adresskarta/MapServer` finns på https://kartportal.lulea.se/server/rest/services/adresskarta/MapServer . Det är en **bakgrundskarta**, inte ett verifierat API med sökbara adresspunkter och husnummer. Använd därför inte karttjänstens mittpunkt som adresskoordinat.
+
+**Boden:** Publik WebGIS-karta finns på https://gisportal.boden.se/portal/apps/experiencebuilder/experience/?id=8e6928656bba4c108953d59b6fb38523 och kommunens guide på https://boden.se/steg-for-steg-guider/anvand-webgis . Kartan har adressökning, men något öppet adresstjänst-API bakom den är ännu inte verifierat.
+
+**Andra publika källor:** OpenStreetMap Nominatim är fortsatt enda aktiva automatiska geokodaren. Övriga publika adress- och fastighetswebbplatser kan användas för källkontroll, med respekt för användningsvillkor. Ingen automatisk skrapning eller import från Google Maps, Hitta eller Ratsit.
+
+**Förberedd frivillig import:** `prepare_official_address_candidates.py` fungerar för en **valfri behörigt tillgänglig och återanvändbar** adress-CSV med `Adress;Kommun;Latitud;Longitud;Kalla` (WGS84). Det är inget beroende av en särskild dataleverantör och det publicerar aldrig koordinater automatiskt.
 
 ```bash
-python prepare_official_address_candidates.py /saker/plats/adresspunkter_wgs84.csv
+python prepare_official_address_candidates.py /saker/plats/oppna_adresspunkter_wgs84.csv
 ```
 
-Det genererar `data/official_address_review.csv` med enbart husnummermatchningar för Luleå/Boden. Flera likadana adressnycklar blockeras från automatisk godkänning. Även entydiga träffar **kräver kontroll av adress, källvillkor och publiceringsrätt**, och importeras inte automatiskt till `geocoded_addresses.json`. Den godkända posten kan därefter införas i `data/manual_coordinates.csv`, med källa, precision och kontroll-datum. Kör inte skriptet mot ett register som ni saknar rätt att använda.
+Ett framtida automatiskt ArcGIS-fallbacksteg får aktiveras först när vi kan verifiera en publik `FeatureServer`- eller sökbar `MapServer`-tjänst med korrekt kommun, gatunamn, husnummer, koordinatsystem och tillåtna nyttjandevillkor. Annars fortsätter den befintliga prioriterade granskningskön.
