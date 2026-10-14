@@ -1,17 +1,23 @@
 {
   "Abramsvägen 40 96196 Boden|Boden": {
-    "lat": 65.8482078,
-    "lon": 21.5992627,
-    "matched_name": "Abramsvägen, Anisgården, Vittjärv, Bodens kommun, Norrbottens län, 961 44, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.849919999492,
+    "lon": 21.599233488111,
+    "match_score": 73.2,
+    "matched_name": "Abramsvägen 40, 961 96 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Baldersgatan 1 96133 Boden|Boden": {
-    "lat": 65.8169472,
-    "lon": 21.6907532,
-    "matched_name": "Baldersgatan, Sanden, Boden, Bodens kommun, Norrbottens län, 961 35, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.81762098139,
+    "lon": 21.690800045826,
+    "match_score": 73.2,
+    "matched_name": "Baldersgatan 1, 961 33 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Bangränd 2 96168 Boden|Boden": {
     "lat": 65.8203692,
@@ -56,11 +62,14 @@
     "source": "OpenStreetMap Nominatim"
   },
   "Bullerleden 5 96167 Boden|Boden": {
-    "lat": 65.8306427,
-    "lon": 21.7310504,
-    "matched_name": "Bullerleden, Fagernäs, Boden, Bodens kommun, Norrbottens län, 961 37, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.832370364804,
+    "lon": 21.728657008746,
+    "match_score": 71.53,
+    "matched_name": "Bullerleden 5, 961 67 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Datavägen 10 97754 Luleå|Luleå": {
     "lat": 65.6186453,
@@ -70,11 +79,14 @@
     "source": "OpenStreetMap Nominatim"
   },
   "Drottninggatan 4 96135 Boden|Boden": {
-    "lat": 65.82347,
-    "lon": 21.6857539,
-    "matched_name": "Drottninggatan, Björknäs, Boden, Bodens kommun, Norrbottens län, 961 35, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.82430210388,
+    "lon": 21.686909698035,
+    "match_score": 76.14,
+    "matched_name": "Drottninggatan 4, 961 35 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Handelsvägen 19 97345 Luleå|Luleå": {
     "lat": 65.6241305,
@@ -82,11 +94,14 @@
     "source": "OpenStreetMap Nominatim"
   },
   "Hangargränd 1 96143 Boden|Boden": {
-    "lat": 65.8071372,
-    "lon": 21.6842438,
-    "matched_name": "Hangargränd, Boden, Bodens kommun, Norrbottens län, 961 43, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.807667647001,
+    "lon": 21.68383115811,
+    "match_score": 71.53,
+    "matched_name": "Hangargränd 1, 961 43 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Hantverksvägen 8 95433 Gammelstad|Luleå": {
     "lat": 65.6387429,
@@ -103,11 +118,14 @@
     "source": "OpenStreetMap Nominatim"
   },
   "Hedenbrovägen 2 96136 Boden|Boden": {
-    "lat": 65.8197086,
-    "lon": 21.6640753,
-    "matched_name": "Hedenbrovägen, Sveafältet, Boden, Bodens kommun, Norrbottens län, 961 36, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.822991236815,
+    "lon": 21.665203943727,
+    "match_score": 74.73,
+    "matched_name": "Hedenbrovägen 2, 961 36 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Holmarvägen 153 97598 Luleå|Luleå": {
     "lat": 65.7683163,
@@ -117,11 +135,14 @@
     "source": "OpenStreetMap Nominatim"
   },
   "Kungsgatan 41 96134 Boden|Boden": {
-    "lat": 65.8264151,
-    "lon": 21.6978758,
-    "matched_name": "Kungsgatan, Prästholmen, Boden, Bodens kommun, Norrbottens län, 961 86, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.824492024168,
+    "lon": 21.691965163944,
+    "match_score": 71.53,
+    "matched_name": "Kungsgatan 41, 961 34 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Kärrviolgatan 3 97636 Luleå|Luleå": {
     "lat": 65.6285768,
@@ -130,12 +151,25 @@
     "precision": "street",
     "source": "OpenStreetMap Nominatim"
   },
+  "Lakaträsk 404 Boden|Boden": {
+    "lat": 66.275858324671,
+    "lon": 21.12118283229,
+    "match_score": 71.53,
+    "matched_name": "Lakaträsk 404, 961 92 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
+  },
   "Lavettvägen 1 96143 Boden|Boden": {
-    "lat": 65.8022754,
-    "lon": 21.6742854,
-    "matched_name": "Lavettvägen, Bodsvedjan, Boden, Bodens kommun, Norrbottens län, 961 43, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.800614189257,
+    "lon": 21.671348034254,
+    "match_score": 71.53,
+    "matched_name": "Lavettvägen 1, 961 43 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Lejdevägen 10 97596 Luleå|Luleå": {
     "lat": 65.6236422,
@@ -232,6 +266,16 @@
     "source": "https://tic.io/sv/fastighet/909a6a88-b9c3-90ec-e040-ed8f66444c3f",
     "verified": true
   },
+  "Solskensvägen 25 Boden|Boden": {
+    "lat": 65.759151725243,
+    "lon": 21.732408325049,
+    "match_score": 76.14,
+    "matched_name": "Solskensvägen 25, 961 51 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
+  },
   "Storhedsvägen 1 97345 Luleå|Luleå": {
     "lat": 65.6187246,
     "lon": 22.0414777,
@@ -245,32 +289,44 @@
     "source": "OpenStreetMap Nominatim"
   },
   "Sturegatan 34 96133 Boden|Boden": {
-    "lat": 65.8192795,
-    "lon": 21.6894889,
-    "matched_name": "Sturegatan, Sanden, Boden, Bodens kommun, Norrbottens län, 961 35, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.819219227167,
+    "lon": 21.685876030051,
+    "match_score": 71.53,
+    "matched_name": "Sturegatan 34, 961 33 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Sturegatan 5A 96173 Boden|Boden": {
-    "lat": 65.8192795,
-    "lon": 21.6894889,
-    "matched_name": "Sturegatan, Sanden, Boden, Bodens kommun, Norrbottens län, 961 35, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.821045752096,
+    "lon": 21.704168495845,
+    "match_score": 71.53,
+    "matched_name": "Sturegatan 5A, 961 73 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Stålverket 20 96140 Boden|Boden": {
-    "lat": 65.806966,
-    "lon": 21.78551,
-    "precision": "address_reference",
-    "source": "Publicerad adresskoordinat, Ratsit (oberoende kontroll rekommenderas)",
-    "source_url": "https://www.ratsit.se/5164139726-Eiffage_Genie_Civil_Marine_Sverige_Filial"
+    "lat": 65.806965828159,
+    "lon": 21.78551011462,
+    "match_score": 71.53,
+    "matched_name": "Stålverket 20, 961 40 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Svartbyvägen 1 96137 Boden|Boden": {
-    "lat": 65.8215175,
-    "lon": 21.7236977,
-    "matched_name": "Svartbyvägen, Fagernäs, Boden, Bodens kommun, Norrbottens län, 961 67, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.826303009113,
+    "lon": 21.71678703454,
+    "match_score": 73.2,
+    "matched_name": "Svartbyvägen 1, 961 37 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Svartövägen 10 97437 Luleå|Luleå": {
     "lat": 65.5630156,
@@ -294,18 +350,24 @@
     "source": "OpenStreetMap Nominatim"
   },
   "Svedjebergsvägen 10 96140 Boden|Boden": {
-    "lat": 65.8136846,
-    "lon": 21.7529892,
-    "matched_name": "Svedjebergsvägen, Norra Svartbyn, Södra Svartbyn, Bodens kommun, Norrbottens län, 961 40, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.813848483128,
+    "lon": 21.751910678416,
+    "match_score": 76.66,
+    "matched_name": "Svedjebergsvägen 10, 961 40 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Svedjebergsvägen 8 96140 Boden|Boden": {
-    "lat": 65.8136846,
-    "lon": 21.7529892,
-    "matched_name": "Svedjebergsvägen, Norra Svartbyn, Södra Svartbyn, Bodens kommun, Norrbottens län, 961 40, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.814010226836,
+    "lon": 21.750748400823,
+    "match_score": 76.5,
+    "matched_name": "Svedjebergsvägen 8, 961 40 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Teknikens hus väg 2 97754 Luleå|Luleå": {
     "lat": 65.616861,
@@ -321,23 +383,34 @@
     "source": "OpenStreetMap Nominatim"
   },
   "Teknikvägen 13 96150 Boden|Boden": {
-    "lat": 65.7583334,
-    "lon": 21.758292,
-    "matched_name": "Teknikvägen, Sävast, Bodens kommun, Norrbottens län, 961 93, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.757848140318,
+    "lon": 21.758888683442,
+    "match_score": 73.2,
+    "matched_name": "Teknikvägen 13, 961 50 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Teknikvägen 3 96150 Boden|Boden": {
-    "lat": 65.7574548,
-    "lon": 21.758779,
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.757777542518,
+    "lon": 21.760588542637,
+    "match_score": 71.53,
+    "matched_name": "Teknikvägen 3, 961 50 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Timjanvägen 5 96147 Boden|Boden": {
-    "lat": 65.7721111,
-    "lon": 21.7161092,
-    "matched_name": "Timjanvägen, Källdal, Sävast, Bodens kommun, Norrbottens län, 961 47, Sverige",
-    "precision": "street",
-    "source": "OpenStreetMap Nominatim"
+    "lat": 65.773305410735,
+    "lon": 21.716670553409,
+    "match_score": 71.53,
+    "matched_name": "Timjanvägen 5, 961 47 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   },
   "Torpslingan 19A 97347 Luleå|Luleå": {
     "lat": 65.6098976,
@@ -371,5 +444,15 @@
     "lat": 65.5799977,
     "lon": 22.1369429,
     "source": "OpenStreetMap Nominatim"
+  },
+  "Övre Buddbyn 141 96192 Boden|Boden": {
+    "lat": 65.888569801464,
+    "lon": 21.658336205925,
+    "match_score": 74.73,
+    "matched_name": "Övre Buddbyn 141, 961 92 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
   }
 }
