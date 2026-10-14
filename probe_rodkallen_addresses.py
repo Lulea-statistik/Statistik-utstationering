@@ -16,8 +16,8 @@ def fetch(where,limit=100):
     params=urllib.parse.urlencode({"f":"json","where":where,"outFields":"ADRESS",
         "returnGeometry":"true","outSR":"4326","resultRecordCount":limit})
     request=urllib.request.Request(ENDPOINT+"?"+params,headers={
-        "User-Agent":"LuleaStatistikRödkallenProbe/1.0 (https://github.com/Lulea-statistik/Statistik-utstationering)"})
-    for attempt in range(3):
+        "User-Agent":"LuleaStatistikRodkallenProbe/1.0 (https://github.com/Lulea-statistik/Statistik-utstationering)"})
+    for attempt in range(2):
         try:
             with urllib.request.urlopen(request,timeout=30) as result:
                 payload=json.load(result)
@@ -25,10 +25,10 @@ def fetch(where,limit=100):
                 raise ValueError(str(payload["error"]))
             return payload.get("features") or []
         except (urllib.error.HTTPError,urllib.error.URLError,TimeoutError,ValueError) as exc:
-            if attempt==2:
+            if attempt==1:
                 print("ArcGIS Rödkallen query failed, preserving the review queue:",where,str(exc))
                 return None
-            time.sleep(1.5*(attempt+1))
+            time.sleep(2.0)
     return None
 def checked(feature):
     geometry=feature.get("geometry") or {}
@@ -38,7 +38,10 @@ def checked(feature):
 def main():
     rows=[]
     exact_match=False
+    # Compare the known-good, simple equality query with lowercase/uppercase variants.
+    # Run strictly sequentially and throttle requests to avoid loading the server.
     for address in ("RÖDKALLEN 66","rödkallen 66"):
+        time.sleep(2)
         for feature in (fetch("ADRESS = '"+address+"'") or []):
             name=str((feature.get("attributes") or {}).get("ADRESS",""))
             geo=feature.get("geometry") or {}
@@ -48,7 +51,9 @@ def main():
                 "Exakt adress med giltig WGS84-punkt" if exact else "Exakt textsökning men koordinat behöver granskas"])
     # One bounded API query covers every requested neighboring number. Avoid 60 calls.
     candidates=[]
-    for feature in (fetch("UPPER(ADRESS) LIKE 'RÖDKALLEN %'",100) or []):
+    # Avoid UPPER(ADRESS): this ArcGIS service returns HTTP 500 for it.
+    time.sleep(2)
+    for feature in (fetch("ADRESS LIKE 'RÖDKALLEN %'",100) or []):
         name=str((feature.get("attributes") or {}).get("ADRESS",""))
         parts=name.upper().split()
         if len(parts)!=2 or parts[0]!="RÖDKALLEN" or not parts[1].isdigit():
