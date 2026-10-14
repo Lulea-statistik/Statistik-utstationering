@@ -178,9 +178,11 @@ def main():
             precision = result.get("precision", "unknown")
             if precision == "exact" and result.get("verified"):
                 continue
+            status = "Exakt adress behöver oberoende kontroll" if precision == "exact" else "Granska lägesnoggrannhet"
+            if place == "Stålverket 20 96140 Boden" and muni == "Boden":
+                status = "PRIORITET: motstridiga publicerade koordinater, ca 480 m skillnad; kontrollera adresspunkt mot fastighetsposition"
             writer.writerow([place, muni, int(priority.get(place + "|" + muni, 0)),
-                             precision, result.get("source", ""), result.get("matched_name", ""),
-                             "Exakt adress behöver oberoende kontroll" if precision == "exact" else "Granska lägesnoggrannhet"])
+                             precision, result.get("source", ""), result.get("matched_name", ""), status])
     print("Position quality review:", QUALITY)
     print(f"Manual verified coordinates: {len(manual)}")
     print("Review queue:", REVIEW)
