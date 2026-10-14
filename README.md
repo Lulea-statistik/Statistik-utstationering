@@ -99,3 +99,9 @@ Ett framtida automatiskt ArcGIS-fallbacksteg får aktiveras först när vi kan v
 ### Automatisk kommunal fallback för Luleå (granskningsläge)
 
 Efter den vanliga OSM-geokodningen körs `fallback_lulea_municipal_addresses.py` automatiskt i samma GitHub Actions-flöde. Det söker endast Luleåadresser som inte redan har koordinater märkta `exact`. Gatunamn och husnummer matchas mot Luleås publika ArcGIS REST-lager `adresskarta/MapServer/86`. Sökningar sker adressvis, kontrollerar exakt matchning, en enda träff och WGS84-koordinater inom regionen. Rapporten `data/municipal_address_candidates.csv` redovisar nya kandidater och sökfel även för framtida adresser. Ingen koordinat i rapporten förs automatiskt över till kartans produktionscache eftersom rätt till lagring och offentlig återpublicering ännu inte verifierats. Boden hanteras fortsatt med OSM och den manuella granskningskön tills ett motsvarande öppet kommunalt adress-API identifierats.
+
+### Bodens publika adresslocator som automatisk fallback (granskningsläge)
+
+Efter OSM-sökningen körs också `fallback_boden_municipal_addresses.py`, som frågar Bodens publika `GaidaLocator_Address/GeocodeServer` för adresser utan `exact`-position. Scriptet jämför **hela gatunamnet och husnumret**, kontrollerar träffens score och WGS84-punkt och skriver `data/boden_municipal_address_candidates.csv`. Det försöker alltså även förbättra redan ungefärligt geokodade adresser.
+
+Observera att den äldre avgränsningen 65,4–66,1 grader nord är för snäv för norra Boden. Bodens granskningssteg accepterar därför 65,4–66,45 och kräver fortfarande exakt adressmatchning. Träffar och koordinatprecision måste kvalitetssäkras, och återanvändningsvillkoren klarläggas, innan några av dessa punkter skrivs till den publika produktionscachen. En API-träff ensam räcker inte för att en adress ska försvinna från tabellen över saknade koordinater.
