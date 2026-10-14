@@ -1,0 +1,22 @@
+﻿Kommun;Tjänst;LagerID;Lagernamn;Geometri;Adressfalt;Bedömning
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskarta/MapServer;27;Vägar;esriGeometryPolyline;gatunamn;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskarta/MapServer;47;Vägar;esriGeometryPolyline;gatunamn;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskarta/MapServer;86;Adressplats, text 3 001 -;esriGeometryPoint;ADRESS;Möjligt adresslager – kontrollera licens, husnummer och frågor
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskarta/MapServer;91;Skidlift 10 001 -;esriGeometryPolyline;ADDRESS;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskarta/MapServer;93;Byggnader kyrka - 30 002;esriGeometryPolygon;husnummer;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskarta/MapServer;94;Byggnader samhällsfunktion/samfund - 20 002;esriGeometryPolygon;ADDRESS, EXEMPTADDRESSING;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskarta/MapServer;95;Byggnader kyrkstuga 10 001 -;esriGeometryPolygon;ADDRESS, EXEMPTADDRESSING;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskarta/MapServer;96;Byggnader 20 001 - ;esriGeometryPolygon;ADDRESS, EXEMPTADDRESSING;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskarta/MapServer;97;Byggnader 20 001 -;esriGeometryPolygon;husnummer;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskarta/MapServer;107;Vägar - 10 002;esriGeometryPolyline;gatunamn;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskartan_niva2/MapServer;27;Vägar;esriGeometryPolyline;gatunamn;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskartan_niva2/MapServer;47;Vägar;esriGeometryPolyline;gatunamn;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskartan_niva2/MapServer;86;Adressplats, text 3 001 -;esriGeometryPoint;ADRESS;Möjligt adresslager – kontrollera licens, husnummer och frågor
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskartan_niva2/MapServer;91;Skidlift 10 001 -;esriGeometryPolyline;ADDRESS;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskartan_niva2/MapServer;93;Byggnader kyrka - 30 002;esriGeometryPolygon;husnummer;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskartan_niva2/MapServer;94;Byggnader samhällsfunktion/samfund - 20 002;esriGeometryPolygon;ADDRESS, EXEMPTADDRESSING;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskartan_niva2/MapServer;95;Byggnader kyrkstuga 10 001 -;esriGeometryPolygon;ADDRESS, EXEMPTADDRESSING;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskartan_niva2/MapServer;96;Byggnader 20 001 - ;esriGeometryPolygon;ADDRESS, EXEMPTADDRESSING;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskartan_niva2/MapServer;97;Byggnader 20 001 -;esriGeometryPolygon;husnummer;Ej verifierat som frågebart adresspunktlager
+Luleå;https://kartportal.lulea.se/server/rest/services/adresskartan_niva2/MapServer;107;Vägar - 10 002;esriGeometryPolyline;gatunamn;Ej verifierat som frågebart adresspunktlager
+Boden;https://gisportal.boden.se/server/rest/services;;;;;Tjänstekatalog hittad – sökbar adresspunkttjänst ej verifierad
