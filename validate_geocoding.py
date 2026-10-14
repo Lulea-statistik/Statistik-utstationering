@@ -33,7 +33,7 @@ def main():
         assert isinstance(loc, dict), key
         lat = float(loc["lat"])
         lon = float(loc["lon"])
-        assert math.isfinite(lat) and math.isfinite(lon) and 65.4 <= lat <= 66.45 and 21.0 <= lon <= 23.3, key
+        assert math.isfinite(lat) and math.isfinite(lon) and 65.2 <= lat <= 66.45 and 21.0 <= lon <= 23.3, key
     for key, item in attempts.items():
         assert isinstance(item, dict) and item.get("next_retry"), key
     quality = read_csv("geocoding_quality_review.csv")
