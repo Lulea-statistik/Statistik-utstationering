@@ -34,7 +34,7 @@ def checked(feature):
     geometry=feature.get("geometry") or {}
     lat,lon=geometry.get("y"),geometry.get("x")
     return (isinstance(lat,(int,float)) and isinstance(lon,(int,float))
-        and 65.4<=lat<=66.45 and 21.0<=lon<=23.3)
+        and 65.2<=lat<=66.45 and 21.0<=lon<=23.3)
 def main():
     rows=[]
     exact_match=False
