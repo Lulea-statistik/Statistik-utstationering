@@ -77,3 +77,15 @@ Flödet startar vid nya data i `data/latest.csv` eller `data/history.csv`, ändr
 6. `data/geocoding_quality_review.csv` granskar även redan geokodade platser med låg eller okänd precision.
 
 Observera att kartwebbplatsernas vanliga sök-URL:er **inte är API:er för automatisk koordinathämtning**. Kommunala/Lantmäteriets API:er kan senare läggas till som separata automatiska källor när behörighet, licens och adressmatchning är kontrollerade. Gör inte webbsideskrapning av Google Maps eller Hitta för återpublicering.
+
+### Officiella svenska adresspunkter (förberedd import, ej aktiv API-koppling)
+
+Lantmäteriets **Belägenhetsadress Nedladdning, vektor** är ett möjligt nästa steg: https://geotorget.lantmateriet.se/geodataprodukter/belagenhetsadress-nedladdning-vektor-api . Avgiftsfri produkt, men **behörighet och juridisk prövning krävs**. Kontrollera även villkor för vidarepublicering av koordinater innan export används.
+
+Efter beviljad åtkomst kan en behörig användare exportera de relevanta adresspunkterna till semikolonavgränsad CSV med kolumnerna `Adress;Kommun;Latitud;Longitud;Kalla`. Koordinaterna **måste vara transformerade till WGS84, EPSG:4326** innan skriptet körs.
+
+```bash
+python prepare_official_address_candidates.py /saker/plats/adresspunkter_wgs84.csv
+```
+
+Det genererar `data/official_address_review.csv` med enbart husnummermatchningar för Luleå/Boden. Flera likadana adressnycklar blockeras från automatisk godkänning. Även entydiga träffar **kräver kontroll av adress, källvillkor och publiceringsrätt**, och importeras inte automatiskt till `geocoded_addresses.json`. Den godkända posten kan därefter införas i `data/manual_coordinates.csv`, med källa, precision och kontroll-datum. Kör inte skriptet mot ett register som ni saknar rätt att använda.
