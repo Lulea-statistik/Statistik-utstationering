@@ -31,16 +31,16 @@ def main():
                 raise ValueError(str(service["error"]))
             if "services" in service and "layers" not in service:
                 records.append([municipality, url, "", "", "", "", "Tjänstekatalog hittad – sökbar adresspunkttjänst ej verifierad"])
-                for entry in service.get("services", []):
+                for entry in service.get("services") or []:
                     name = entry.get("name", "")
                     if not any(k in name.casefold() for k in KEYWORDS):
                         continue
                     target = url.rstrip("/") + "/" + name + "/" + entry.get("type", "MapServer")
                     try:
                         item = get_json(target)
-                        for layer in item.get("layers", []):
+                        for layer in item.get("layers") or []:
                             detail = get_json(target + "/" + str(layer["id"]))
-                            fields = [field.get("name", "") for field in detail.get("fields", [])]
+                            fields = [field.get("name", "") for field in detail.get("fields") or []]
                             matches = [v for v in fields if any(k in v.casefold() for k in KEYWORDS)]
                             geom = detail.get("geometryType", "")
                             status = "Möjligt adresslager – kontrollera licens och husnummer" if geom == "esriGeometryPoint" and matches and "Query" in detail.get("capabilities", "") else "Ej verifierat som sökbart adresspunktlager"
@@ -48,7 +48,7 @@ def main():
                     except (OSError, ValueError, KeyError) as err:
                         records.append([municipality, target, "", "", "", "", "Metadatafel: " + str(err)[:120]])
                 continue
-            layers = service.get("layers", [])
+            layers = service.get("layers") or []
             if not layers:
                 records.append([municipality, url, "", "", "", "", "Inga inspekterbara lager i metadata"])
             for layer in layers:
@@ -56,7 +56,7 @@ def main():
                 layer_url = url + "/" + str(layer["id"])
                 try:
                     details = get_json(layer_url)
-                    fields = [f.get("name", "") for f in details.get("fields", [])]
+                    fields = [f.get("name", "") for f in details.get("fields") or []]
                     matches = [f for f in fields if any(k in f.casefold() for k in KEYWORDS)]
                     queryable = bool(details.get("capabilities", "").find("Query") >= 0)
                     geom = details.get("geometryType", "")
