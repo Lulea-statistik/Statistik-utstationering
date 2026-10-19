@@ -112,11 +112,60 @@ function render(){
  if(addresses.has(current))$('address').value=current;else $('address').value='';$('addressCombo').refresh();
  const v=selected(),group=eachGroup(v,r=>key(r.Plats,r.Kommun));$('workers').textContent=count(v).toLocaleString('sv-SE');$('sites').textContent=group.size.toLocaleString('sv-SE');$('entries').textContent=v.length.toLocaleString('sv-SE');circles.clearLayers();markerEntries=[];
  let mapped=0;const points=[];let sorted=[...group].sort((a,b)=>count(b[1])-count(a[1]));
- for(const [k,rs] of sorted){let loc=coords[k],n=count(rs);if(!loc||!Number.isFinite(+loc.lat)||!Number.isFinite(+loc.lon))continue;mapped++;
- const approx=loc.precision==='street'||loc.precision==='approximate';const circle=L.circleMarker([+loc.lat,+loc.lon],{radius:Math.max(2,Math.min(18,Math.sqrt(n)*1.55)),weight:1.5,color:'#5b21a5',fillColor:'#a855f7',dashArray:approx?'4 4':null,fillOpacity:.55}).addTo(circles);markerEntries.push({layer:circle,n});
- const firms=[...eachGroup(rs,r=>r.Arbetsgivare)].sort((a,b)=>count(b[1])-count(a[1])).map(([name,recs])=>esc(name)+' ('+count(recs)+')').join('<br>');
- circle.bindPopup('<b>'+esc(rs[0].Plats)+'</b><br>'+esc(rs[0].Kommun)+'<br><b>'+n+' registrerade arbetstagare</b><br>'+(approx?'<em>Ungefärlig gatuposition – inte exakt adress</em>':'Adressposition')+'<hr><div class="popup-employers">'+firms+'</div>',{maxWidth:340,autoPan:true,offset:[0,-6]});
- circle.on('click',()=>{activeAddress=k;$('address').value=k;$('addressCombo').refresh();drawCharts();circle.closePopup();map.once('moveend',()=>{if(map.hasLayer(circle))circle.openPopup();});zoomAddress(k);});points.push([+loc.lat,+loc.lon]);
+ // Group addresses only when their mapped positions coincide; preserve their individual statistics.
+ const positions=new Map();
+ for(const [k,rs] of sorted){
+   const loc=coords[k];
+   if(!loc||!Number.isFinite(+loc.lat)||!Number.isFinite(+loc.lon))continue;
+   mapped++;
+   const positionKey=(+loc.lat).toFixed(7)+'|'+(+loc.lon).toFixed(7);
+   if(!positions.has(positionKey))positions.set(positionKey,[]);
+   positions.get(positionKey).push({k,rs,loc,n:count(rs)});
+ }
+ for(const colocated of positions.values()){
+   const first=colocated[0],lat=+first.loc.lat,lon=+first.loc.lon;
+   const total=colocated.reduce((sum,item)=>sum+item.n,0);
+   const approx=colocated.some(item=>item.loc.precision==='street'||item.loc.precision==='approximate');
+   const circle=L.circleMarker([lat,lon],{radius:Math.max(2,Math.min(18,Math.sqrt(total)*1.55)),weight:1.5,color:'#5b21a5',fillColor:'#a855f7',dashArray:approx?'4 4':null,fillOpacity:.55}).addTo(circles);
+   markerEntries.push({layer:circle,n:total});
+   const popupDetails=(item)=>{
+     const firms=[...eachGroup(item.rs,r=>r.Arbetsgivare)].sort((a,b)=>count(b[1])-count(a[1])).map(([name,recs])=>esc(name)+' ('+count(recs)+')').join('<br>');
+     const approximate=item.loc.precision==='street'||item.loc.precision==='approximate';
+     return '<b>'+esc(item.rs[0].Plats)+'</b><br>'+esc(item.rs[0].Kommun)+'<br><b>'+item.n+' registrerade arbetstagare</b><br>'+(approximate?'<em>Ungefärlig gatuposition – inte exakt adress</em>':'Adressposition')+'<hr><div class="popup-employers">'+firms+'</div>';
+   };
+   const popupContent=(item)=>{
+     if(colocated.length===1)return popupDetails(item);
+     const options=colocated.map(candidate=>'<option value="'+esc(candidate.k)+'"'+(candidate.k===item.k?' selected':'')+'>'+esc(candidate.rs[0].Plats)+' ('+candidate.n+')</option>').join('');
+     return '<label for="colocated-address-select"><b>'+colocated.length+' adresser på samma kartposition</b></label><br><select id="colocated-address-select" aria-label="Välj adress på kartpositionen" style="width:100%;max-width:320px;margin:7px 0 10px;padding:6px">'+options+'</select><div id="colocated-address-details">'+popupDetails(item)+'</div>';
+   };
+   const choose=(item)=>{
+     activeAddress=item.k;
+     $('address').value=item.k;
+     $('addressCombo').refresh();
+     drawCharts();
+   };
+   const initial=colocated.find(item=>item.k===$('address').value)||first;
+   circle.bindPopup(popupContent(initial),{maxWidth:360,autoPan:true,offset:[0,-6]});
+   circle.on('popupopen',()=>{
+     const select=circle.getPopup().getElement()?.querySelector('#colocated-address-select');
+     if(!select)return;
+     select.addEventListener('change',()=>{
+       const next=colocated.find(item=>item.k===select.value);
+       if(!next)return;
+       choose(next);
+       const details=circle.getPopup().getElement()?.querySelector('#colocated-address-details');
+       if(details)details.innerHTML=popupDetails(next);
+     });
+   });
+   circle.on('click',()=>{
+     const item=colocated.find(entry=>entry.k===activeAddress)||first;
+     choose(item);
+     circle.setPopupContent(popupContent(item));
+     circle.closePopup();
+     map.once('moveend',()=>{if(map.hasLayer(circle))circle.openPopup();});
+     zoomAddress(item.k);
+   });
+   points.push([lat,lon]);
  }
  $('coverage').textContent=mapped+' / '+group.size;$('geoNotice').hidden=mapped===group.size;$('geoNotice').textContent=(group.size-mapped)+' adresser saknar kartposition men visas i adresstabellen med länk för adressökning.'+(Object.keys(coords).length===0?' Koordinatfilen är ännu inte skapad: gå till GitHub → Actions → Geokoda utstationeringsadresser → Run workflow.':'');
  if(points.length&&!$('address').value)map.fitBounds(L.latLngBounds(points).pad(.18),{maxZoom:13});resizeCircles();
