@@ -105,6 +105,20 @@ function baseFiltered(arr){const k=$('municipality').value;return arr.filter(r=>
 function selected(){const a=$('address').value,e=$('employer').value;return baseFiltered(dataAt($('date').value)).filter(r=>(!e||norm(r.Arbetsgivare)===e)&&(!a||key(r.Plats,r.Kommun)===a))}
 function renderMissing(){const all=eachGroup(rows,r=>key(r.Plats,r.Kommun));const missing=[...all].filter(([k])=>{const c=coords[k];return !c||!Number.isFinite(+c.lat)||!Number.isFinite(+c.lon)}).sort((a,b)=>a[0].localeCompare(b[0],'sv'));$('missingCount').textContent='('+missing.length+')';$('missingAddresses').innerHTML=missing.map(([k,rs])=>'<tr><td>'+esc(rs[0].Plats)+'</td><td>'+esc(rs[0].Kommun)+'</td><td><a target="_blank" rel="noopener noreferrer" href="https://www.openstreetmap.org/search?query='+encodeURIComponent(rs[0].Plats+', '+rs[0].Kommun)+'">OpenStreetMap ↗</a> · <a target="_blank" rel="noopener noreferrer" href="'+(rs[0].Kommun==='Boden'?'https://gisportal.boden.se/portal/apps/experiencebuilder/experience/?id=8e6928656bba4c108953d59b6fb38523':'https://kartor.lulea.se/kommunkarta/')+'">Kommunkarta ↗</a></td></tr>').join('')||'<tr><td colspan="3">Alla adresser har koordinater.</td></tr>';}
 function resizeCircles(){const z=map.getZoom();for(const m of markerEntries){const factor=Math.min(1,Math.pow(0.72,Math.max(0,10-z)));m.layer.setRadius(Math.max(2,Math.min(18,Math.sqrt(m.n)*1.55)*factor));}}
+// Keep Leaflet popups fully inside the actual map viewport, including after flyTo.
+function keepPopupVisible(popup){
+ requestAnimationFrame(()=>{
+  if(!map.hasLayer(popup))return;
+  const node=popup.getElement(),container=map.getContainer();
+  if(!node)return;
+  const bounds=container.getBoundingClientRect(),box=node.getBoundingClientRect();
+  const pad=18;
+  // Positive adjustment means the popup should move right/down on screen.
+  const dx=box.left<bounds.left+pad?bounds.left+pad-box.left:box.right>bounds.right-pad?bounds.right-pad-box.right:0;
+  const dy=box.top<bounds.top+pad?bounds.top+pad-box.top:box.bottom>bounds.bottom-pad?bounds.bottom-pad-box.bottom:0;
+  if(dx||dy)map.panBy([-dx,-dy],{animate:false});
+ });
+}
 function zoomAddress(k){const loc=coords[k];if(!loc||!Number.isFinite(+loc.lat)||!Number.isFinite(+loc.lon))return false;map.flyTo([+loc.lat,+loc.lon],loc.precision==='street'?15:17,{animate:true,duration:1.1});return true;}
 function render(){
  const allToday=baseFiltered(dataAt($('date').value));const employerNames=[...new Set(allToday.map(r=>norm(r.Arbetsgivare)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'sv'));const previousEmployer=$('employer').value;$('employer').innerHTML='<option value="">Alla arbetsgivare</option>'+employerNames.map(e=>'<option value="'+esc(e)+'">'+esc(e)+'</option>').join('');if(employerNames.includes(previousEmployer))$('employer').value=previousEmployer; $('employerCombo').refresh();const forAddresses=allToday.filter(r=>!$('employer').value||norm(r.Arbetsgivare)===$('employer').value);const addresses=eachGroup(forAddresses,r=>key(r.Plats,r.Kommun));let current=$('address').value;
@@ -145,8 +159,9 @@ function render(){
      drawCharts();
    };
    const initial=colocated.find(item=>item.k===$('address').value)||first;
-   circle.bindPopup(popupContent(initial),{maxWidth:360,autoPan:true,offset:[0,-6]});
+   circle.bindPopup(popupContent(initial),{maxWidth:360,maxHeight:340,autoPan:false,offset:[0,-6]});
    circle.on('popupopen',()=>{
+     keepPopupVisible(circle.getPopup());
      const select=circle.getPopup().getElement()?.querySelector('#colocated-address-select');
      if(!select)return;
      select.addEventListener('change',()=>{
