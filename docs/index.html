@@ -179,14 +179,18 @@ function render(){
    markerEntries[markerEntries.length-1].popupContent=popupContent;
    circle.bindPopup(popupContent(initial),{maxWidth:360,maxHeight:440,autoPan:false,offset:[0,-6]});
    circle.on('popupopen',()=>{
-     const select=circle.getPopup().getElement()?.querySelector('#colocated-address-select');
-     if(!select)return;
-     select.addEventListener('change',()=>{
-       const next=colocated.find(item=>item.k===select.value);
+     const root=circle.getPopup().getElement();
+     if(!root||root.dataset.addressSwitchBound==='1')return;
+     root.dataset.addressSwitchBound='1';
+     // Delegate at the stable popup container: Leaflet replaces its inner HTML
+     // when selecting a new marker via the address ranking.
+     root.addEventListener('change',event=>{
+       if(!event.target.matches('#colocated-address-select'))return;
+       const next=colocated.find(item=>item.k===event.target.value);
        if(!next)return;
-       choose(next);
-       const details=circle.getPopup().getElement()?.querySelector('#colocated-address-details');
+       const details=root.querySelector('#colocated-address-details');
        if(details)details.innerHTML=popupDetails(next);
+       choose(next);
      });
    });
    circle.on('click',()=>{
