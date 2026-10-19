@@ -109,14 +109,35 @@ function resizeCircles(){const z=map.getZoom();for(const m of markerEntries){con
 function keepPopupVisible(popup){
  requestAnimationFrame(()=>{
   if(!map.hasLayer(popup))return;
-  const node=popup.getElement();
+  const node=popup.getElement(),source=popup._source;
   if(!node)return;
-  // Move only the popup, never the map: avoids feedback with flyTo/moveend.
+  // Reset any earlier correction before measuring.
   node.style.translate='0px 0px';
-  const bounds=map.getContainer().getBoundingClientRect();
-  const box=node.getBoundingClientRect(),pad=12;
-  const dx=box.left<bounds.left+pad?bounds.left+pad-box.left:box.right>bounds.right-pad?bounds.right-pad-box.right:0;
-  const dy=box.top<bounds.top+pad?bounds.top+pad-box.top:box.bottom>bounds.bottom-pad?bounds.bottom-pad-box.bottom:0;
+  const bounds=map.getContainer().getBoundingClientRect(),box=node.getBoundingClientRect(),pad=12;
+  let dx=0,dy=0;
+  const point=source&&source.getLatLng?map.latLngToContainerPoint(source.getLatLng()):null;
+  if(point){
+   const anchor=map.getContainer().getBoundingClientRect();
+   const px=anchor.left+point.x,py=anchor.top+point.y;
+   // Prefer the popup above the marker, but keep its lower edge above the circle.
+   // If insufficient room above, place it to the side without covering the circle.
+   const markerRadius=source.getRadius?source.getRadius():8,gap=markerRadius+10;
+   if(box.top<bounds.top+pad){
+    dy=bounds.top+pad-box.top;
+    const shiftedBottom=box.bottom+dy;
+    if(shiftedBottom>py-gap){
+     const desiredRight=px-gap;
+     const leftCandidate=desiredRight-box.right;
+     const rightCandidate=px+gap-box.left;
+     dx=(box.width+2*pad<=bounds.width && box.left+leftCandidate>=bounds.left+pad)?leftCandidate:rightCandidate;
+     // Clamp vertically if popup has to sit beside marker.
+    }
+   }
+  }
+  dx+=Math.max(bounds.left+pad-(box.left+dx),0);
+  dx-=Math.max((box.right+dx)-(bounds.right-pad),0);
+  dy+=Math.max(bounds.top+pad-(box.top+dy),0);
+  dy-=Math.max((box.bottom+dy)-(bounds.bottom-pad),0);
   node.style.translate=dx+'px '+dy+'px';
  });
 }
