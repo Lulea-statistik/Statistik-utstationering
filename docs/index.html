@@ -72,7 +72,7 @@ const eachGroup=(data,fn)=>{const m=new Map();data.forEach(r=>{const k=fn(r);if(
 function parse(text){return Papa.parse(text.replace(/^\uFEFF/,''),{header:true,delimiter:';',skipEmptyLines:true}).data.filter(r=>/^\d{4}-\d\d-\d\d$/.test(r.SnapshotDate||''))}
 async function fetchText(url){const r=await fetch(url+'?t='+Math.floor(Date.now()/3600000));if(!r.ok)throw Error(r.status+' '+url);return r.text()}
 async function init(){
- map=L.map('map').setView([65.72,22.0],9);baseLayers={osm:L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}),light:L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap contributors &copy; CARTO',maxZoom:19}),imagery:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles &copy; Esri and its imagery providers',maxZoom:19})};baseLayers.osm.addTo(map);circles=L.layerGroup().addTo(map);map.on('zoomend',resizeCircles);
+ map=L.map('map').setView([65.72,22.0],9);baseLayers={osm:L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}),light:L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap contributors &copy; CARTO',maxZoom:19}),imagery:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles &copy; Esri and its imagery providers',maxZoom:19})};baseLayers.osm.addTo(map);circles=L.layerGroup().addTo(map);map.on('zoomend',resizeCircles);map.on('moveend',()=>{const popup=map._popup;if(popup)keepPopupVisible(popup);});
  const [hist,latest,geos]=await Promise.allSettled([fetchText(root+'data/history.csv'),fetchText(root+'data/latest.csv'),fetchText(root+'data/geocoded_addresses.json')]);
  if(hist.status==='fulfilled')rows=parse(hist.value);
  if(latest.status==='fulfilled'){const last=parse(latest.value),lastDates=new Set(rows.map(r=>r.SnapshotDate));if(last.length && !lastDates.has(last[0].SnapshotDate))rows.push(...last)}
@@ -109,14 +109,15 @@ function resizeCircles(){const z=map.getZoom();for(const m of markerEntries){con
 function keepPopupVisible(popup){
  requestAnimationFrame(()=>{
   if(!map.hasLayer(popup))return;
-  const node=popup.getElement(),container=map.getContainer();
+  const node=popup.getElement();
   if(!node)return;
-  const bounds=container.getBoundingClientRect(),box=node.getBoundingClientRect();
-  const pad=18;
-  // Positive adjustment means the popup should move right/down on screen.
+  // Move only the popup, never the map: avoids feedback with flyTo/moveend.
+  node.style.translate='0px 0px';
+  const bounds=map.getContainer().getBoundingClientRect();
+  const box=node.getBoundingClientRect(),pad=12;
   const dx=box.left<bounds.left+pad?bounds.left+pad-box.left:box.right>bounds.right-pad?bounds.right-pad-box.right:0;
   const dy=box.top<bounds.top+pad?bounds.top+pad-box.top:box.bottom>bounds.bottom-pad?bounds.bottom-pad-box.bottom:0;
-  if(dx||dy)map.panBy([-dx,-dy],{animate:false});
+  node.style.translate=dx+'px '+dy+'px';
  });
 }
 function zoomAddress(k){const loc=coords[k];if(!loc||!Number.isFinite(+loc.lat)||!Number.isFinite(+loc.lon))return false;map.flyTo([+loc.lat,+loc.lon],loc.precision==='street'?15:17,{animate:true,duration:1.1});return true;}
@@ -176,8 +177,7 @@ function render(){
      const item=colocated.find(entry=>entry.k===activeAddress)||first;
      choose(item);
      circle.setPopupContent(popupContent(item));
-     circle.closePopup();
-     map.once('moveend',()=>{if(map.hasLayer(circle))circle.openPopup();});
+     circle.openPopup();
      zoomAddress(item.k);
    });
    points.push([lat,lon]);
