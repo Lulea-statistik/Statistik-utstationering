@@ -2,3 +2,4 @@ Adress;Kommun;Kalladress;Kalltyp;Kandidat_lat;Kandidat_lon;Bedomning
 Övre Buddbyn 141 96192 Boden;Boden;https://www.ratsit.se/5592786148-TuCo_AB;Företagsadress;65.88857;21.65834;Publicerad adresspunkt. Granska lagringsvillkor och verifiera i kommunal adresskälla innan import
 Hydrogränd 2 96143 Boden;Boden;https://www.ratsit.se/5569676686-Hydro66_Svenska_AB;Företagsadress;65.8048;21.68386;Adresspunkt. Kontrollera mot fastighetsposition och villkor före import
 Hydrogränd 2 96143 Boden;Boden;https://tic.io/en/fastighet/0c98e8e8-8300-5573-e053-7e44ed8f3a3b;Fastighetsposition;65.8043;21.6843;Skiljer sig från adresskoordinat. Ej automatiskt godkänd
+Strömörvägen 7 97437 Luleå;Luleå;https://www.google.com/maps/search/?api=1%26query=Str%C3%B6m%C3%B6rv%C3%A4gen%207%2097437%20Lule%C3%A5;Google Maps adressökning;;;Adress visas i Google Maps enligt manuell kontroll 2026-10-19. Verifiera koordinater mot kommunal adresspunkt. Ingen position får importeras från skärmbild.
