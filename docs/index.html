@@ -120,7 +120,7 @@ function keepPopupVisible(popup){
   node.style.translate=dx+'px '+dy+'px';
  });
 }
-function zoomAddress(k){const loc=coords[k];if(!loc||!Number.isFinite(+loc.lat)||!Number.isFinite(+loc.lon))return false;map.flyTo([+loc.lat,+loc.lon],loc.precision==='street'?15:17,{animate:true,duration:1.1});return true;}
+function zoomAddress(k){const loc=coords[k];if(!loc||!Number.isFinite(+loc.lat)||!Number.isFinite(+loc.lon))return false;map.stop();map.setView([+loc.lat,+loc.lon],loc.precision==='street'?15:17,{animate:false});return true;}
 function render(){
  const allToday=baseFiltered(dataAt($('date').value));const employerNames=[...new Set(allToday.map(r=>norm(r.Arbetsgivare)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'sv'));const previousEmployer=$('employer').value;$('employer').innerHTML='<option value="">Alla arbetsgivare</option>'+employerNames.map(e=>'<option value="'+esc(e)+'">'+esc(e)+'</option>').join('');if(employerNames.includes(previousEmployer))$('employer').value=previousEmployer; $('employerCombo').refresh();const forAddresses=allToday.filter(r=>!$('employer').value||norm(r.Arbetsgivare)===$('employer').value);const addresses=eachGroup(forAddresses,r=>key(r.Plats,r.Kommun));let current=$('address').value;
  $('address').innerHTML='<option value="">Alla adresser</option>'+[...addresses].sort((a,b)=>count(b[1])-count(a[1])).map(([k,rs])=>'<option value="'+esc(k)+'">'+esc(rs[0].Plats)+' ('+esc(rs[0].Kommun)+')</option>').join('');
@@ -177,8 +177,8 @@ function render(){
      const item=colocated.find(entry=>entry.k===activeAddress)||first;
      choose(item);
      circle.setPopupContent(popupContent(item));
-     circle.openPopup();
      zoomAddress(item.k);
+     circle.openPopup();
    });
    points.push([lat,lon]);
  }
