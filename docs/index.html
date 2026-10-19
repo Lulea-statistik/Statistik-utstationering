@@ -72,7 +72,7 @@ const eachGroup=(data,fn)=>{const m=new Map();data.forEach(r=>{const k=fn(r);if(
 function parse(text){return Papa.parse(text.replace(/^\uFEFF/,''),{header:true,delimiter:';',skipEmptyLines:true}).data.filter(r=>/^\d{4}-\d\d-\d\d$/.test(r.SnapshotDate||''))}
 async function fetchText(url){const r=await fetch(url+'?t='+Math.floor(Date.now()/3600000));if(!r.ok)throw Error(r.status+' '+url);return r.text()}
 async function init(){
- map=L.map('map').setView([65.72,22.0],9);baseLayers={osm:L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}),light:L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap contributors &copy; CARTO',maxZoom:19}),imagery:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles &copy; Esri and its imagery providers',maxZoom:19})};baseLayers.osm.addTo(map);circles=L.layerGroup().addTo(map);map.on('zoomend',resizeCircles);map.on('moveend',()=>{const popup=map._popup;if(popup)keepPopupVisible(popup);});
+ map=L.map('map').setView([65.72,22.0],9);baseLayers={osm:L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}),light:L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'&copy; OpenStreetMap contributors &copy; CARTO',maxZoom:19}),imagery:L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles &copy; Esri and its imagery providers',maxZoom:19})};baseLayers.osm.addTo(map);circles=L.layerGroup().addTo(map);map.on('zoomend',resizeCircles);
  const [hist,latest,geos]=await Promise.allSettled([fetchText(root+'data/history.csv'),fetchText(root+'data/latest.csv'),fetchText(root+'data/geocoded_addresses.json')]);
  if(hist.status==='fulfilled')rows=parse(hist.value);
  if(latest.status==='fulfilled'){const last=parse(latest.value),lastDates=new Set(rows.map(r=>r.SnapshotDate));if(last.length && !lastDates.has(last[0].SnapshotDate))rows.push(...last)}
@@ -106,39 +106,21 @@ function selected(){const a=$('address').value,e=$('employer').value;return base
 function renderMissing(){const all=eachGroup(rows,r=>key(r.Plats,r.Kommun));const missing=[...all].filter(([k])=>{const c=coords[k];return !c||!Number.isFinite(+c.lat)||!Number.isFinite(+c.lon)}).sort((a,b)=>a[0].localeCompare(b[0],'sv'));$('missingCount').textContent='('+missing.length+')';$('missingAddresses').innerHTML=missing.map(([k,rs])=>'<tr><td>'+esc(rs[0].Plats)+'</td><td>'+esc(rs[0].Kommun)+'</td><td><a target="_blank" rel="noopener noreferrer" href="https://www.openstreetmap.org/search?query='+encodeURIComponent(rs[0].Plats+', '+rs[0].Kommun)+'">OpenStreetMap ↗</a> · <a target="_blank" rel="noopener noreferrer" href="'+(rs[0].Kommun==='Boden'?'https://gisportal.boden.se/portal/apps/experiencebuilder/experience/?id=8e6928656bba4c108953d59b6fb38523':'https://kartor.lulea.se/kommunkarta/')+'">Kommunkarta ↗</a></td></tr>').join('')||'<tr><td colspan="3">Alla adresser har koordinater.</td></tr>';}
 function resizeCircles(){const z=map.getZoom();for(const m of markerEntries){const factor=Math.min(1,Math.pow(0.72,Math.max(0,10-z)));m.layer.setRadius(Math.max(2,Math.min(18,Math.sqrt(m.n)*1.55)*factor));}}
 // Keep Leaflet popups fully inside the actual map viewport, including after flyTo.
+// Pan the map once after opening, rather than translating the popup over its marker.
 function keepPopupVisible(popup){
  requestAnimationFrame(()=>{
   if(!map.hasLayer(popup))return;
-  const node=popup.getElement(),source=popup._source;
-  if(!node)return;
-  // Reset any earlier correction before measuring.
+  const node=popup.getElement();if(!node)return;
   node.style.translate='0px 0px';
-  const bounds=map.getContainer().getBoundingClientRect(),box=node.getBoundingClientRect(),pad=12;
-  let dx=0,dy=0;
-  const point=source&&source.getLatLng?map.latLngToContainerPoint(source.getLatLng()):null;
-  if(point){
-   const anchor=map.getContainer().getBoundingClientRect();
-   const px=anchor.left+point.x,py=anchor.top+point.y;
-   // Prefer the popup above the marker, but keep its lower edge above the circle.
-   // If insufficient room above, place it to the side without covering the circle.
-   const markerRadius=source.getRadius?source.getRadius():8,gap=markerRadius+10;
-   if(box.top<bounds.top+pad){
-    dy=bounds.top+pad-box.top;
-    const shiftedBottom=box.bottom+dy;
-    if(shiftedBottom>py-gap){
-     const desiredRight=px-gap;
-     const leftCandidate=desiredRight-box.right;
-     const rightCandidate=px+gap-box.left;
-     dx=(box.width+2*pad<=bounds.width && box.left+leftCandidate>=bounds.left+pad)?leftCandidate:rightCandidate;
-     // Clamp vertically if popup has to sit beside marker.
-    }
-   }
-  }
-  dx+=Math.max(bounds.left+pad-(box.left+dx),0);
-  dx-=Math.max((box.right+dx)-(bounds.right-pad),0);
-  dy+=Math.max(bounds.top+pad-(box.top+dy),0);
-  dy-=Math.max((box.bottom+dy)-(bounds.bottom-pad),0);
-  node.style.translate=dx+'px '+dy+'px';
+  const viewport=map.getContainer().getBoundingClientRect();
+  const rect=node.getBoundingClientRect(),pad=14;
+  // The popup is anchored above the marker. Shifting the map north
+  // moves both marker and popup downward while preserving their relationship.
+  const shiftX=rect.left<viewport.left+pad?viewport.left+pad-rect.left:
+    rect.right>viewport.right-pad?viewport.right-pad-rect.right:0;
+  const shiftY=rect.top<viewport.top+pad?viewport.top+pad-rect.top:
+    rect.bottom>viewport.bottom-pad?viewport.bottom-pad-rect.bottom:0;
+  if(shiftX||shiftY)map.panBy([-shiftX,-shiftY],{animate:false});
  });
 }
 function zoomAddress(k){const loc=coords[k];if(!loc||!Number.isFinite(+loc.lat)||!Number.isFinite(+loc.lon))return false;map.stop();map.setView([+loc.lat,+loc.lon],loc.precision==='street'?15:17,{animate:false});return true;}
