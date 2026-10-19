@@ -115,6 +115,18 @@ function zoomAddress(k){
  const level=large?13:(loc.precision==='street'||loc.precision==='approximate'?15:17);
  map.stop();map.setView([+loc.lat,+loc.lon],level,{animate:false});return true;
 }
+// One correction after the popup is laid out. No moveend listener or animation loop.
+function fitSelectedPopup(popup){
+ requestAnimationFrame(()=>{
+  if(!map.hasLayer(popup))return;
+  const el=popup.getElement();if(!el)return;
+  const outer=map.getContainer().getBoundingClientRect();
+  const inner=el.getBoundingClientRect(),margin=14;
+  const dx=inner.left<outer.left+margin?outer.left+margin-inner.left:inner.right>outer.right-margin?outer.right-margin-inner.right:0;
+  const dy=inner.top<outer.top+margin?outer.top+margin-inner.top:inner.bottom>outer.bottom-margin?outer.bottom-margin-inner.bottom:0;
+  if(dx||dy)map.panBy([-dx,-dy],{animate:false});
+ });
+}
 function selectMapAddress(k,showPopup=true){
  activeAddress=k;$('address').value=k;$('addressCombo').refresh();drawCharts();
  const marker=markerEntries.find(m=>m.addressKeys&&m.addressKeys.includes(k));
@@ -123,7 +135,7 @@ function selectMapAddress(k,showPopup=true){
   if(item)marker.layer.setPopupContent(marker.popupContent(item));
  }
  zoomAddress(k);
- if(showPopup&&marker)marker.layer.openPopup();
+ if(showPopup&&marker){marker.layer.openPopup();fitSelectedPopup(marker.layer.getPopup());}
 }
 function render(){
  const allToday=baseFiltered(dataAt($('date').value));const employerNames=[...new Set(allToday.map(r=>norm(r.Arbetsgivare)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'sv'));const previousEmployer=$('employer').value;$('employer').innerHTML='<option value="">Alla arbetsgivare</option>'+employerNames.map(e=>'<option value="'+esc(e)+'">'+esc(e)+'</option>').join('');if(employerNames.includes(previousEmployer))$('employer').value=previousEmployer; $('employerCombo').refresh();const forAddresses=allToday.filter(r=>!$('employer').value||norm(r.Arbetsgivare)===$('employer').value);const addresses=eachGroup(forAddresses,r=>key(r.Plats,r.Kommun));let current=$('address').value;
