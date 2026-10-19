@@ -134,6 +134,13 @@
     "precision": "street",
     "source": "OpenStreetMap Nominatim"
   },
+  "Hummergatan 10 97334 Luleå|Luleå": {
+    "lat": 65.5997688,
+    "lon": 22.1452243,
+    "matched_name": "Hummergatan, Bergviken, Luleå, Luleå kommun, Norrbottens län, 973 34, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
   "Hydrogränd 2 96143 Boden|Boden": {
     "lat": 65.804757047237,
     "lon": 21.684779582066,
@@ -302,6 +309,13 @@
   "Strömörvägen 2C 97437 Luleå|Luleå": {
     "lat": 65.5536113,
     "lon": 22.2306708,
+    "matched_name": "Strömörvägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 38, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Strömörvägen 7 97437 Luleå|Luleå": {
+    "lat": 65.5530957,
+    "lon": 22.2367007,
     "matched_name": "Strömörvägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 38, Sverige",
     "precision": "street",
     "source": "OpenStreetMap Nominatim"
