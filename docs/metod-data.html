@@ -9,47 +9,6 @@ h1,h2,h3,h4,h5,h6,a,nav a{font-family:var(--font-heading)}
 button,input,select,textarea,table{font-family:var(--font-body)}
 </style><style>.site-nav{background:#e7eef5;padding:12px max(20px,calc((100vw - 1250px)/2));display:flex;gap:12px;flex-wrap:wrap}.site-nav a{color:#17304a;text-decoration:none;font-weight:700;padding:9px 16px;border-radius:8px}.site-nav a[aria-current="page"]{background:#17304a;color:#fff}.site-nav a:hover:not([aria-current]){background:#d2dfeb}</style></head><body>
 <header><h1>Metod &amp; data</h1><p>Utstationerad arbetskraft – Luleå och Boden</p></header><nav class="site-nav" aria-label="Huvudnavigation"><a href="index.html">Startsida</a><a href="metod-data.html" aria-current="page">Metod &amp; data</a></nav>
-<main class="wrap"><section class="panel"><h2>Granskning av arbetsgivarnamn</h2><p class="hint">Sök bland samtliga inlästa arbetsgivarnamn, även historiska. Namnform är inte ett tillförlitligt sätt att avgöra om en arbetsgivare är en fysisk person. Sökfunktionen känner igen vanliga europeiska bolagsbeteckningar (t.ex. AB, AS, Ltd, GmbH, Oy och Sp. z o.o.) både före och efter företagsnamnet som stöd för granskning. <strong>Ingen integritetsklassning görs utan verifierad bolagsform.</strong> Avsaknad av förkortning innebär inte enskild firma. Steg 2 är kontroll mot <a href="https://e-justice.europa.eu/topics/registers-business-insolvency-land/business-registers-search-company-eu_en" target="_blank" rel="noopener noreferrer">BRIS – EU:s företagsregister</a>. Sökningen utförs manuellt på grund av portalens åtkomstvillkor. Ett uteblivet resultat innebär inte att arbetsgivaren är en fysisk person.</p><div class="review-controls"><input id="reviewSearch" type="search" placeholder="Sök företagsnamn..." aria-label="Sök i samtliga arbetsgivarnamn"><label><input id="reviewFlaggedOnly" type="checkbox"> Potentiell enskild näringsidkare (saknar igenkänd bolagsbeteckning)</label></div><p class="hint" id="reviewSummary"></p><div class="review-table"><table><thead><tr><th>Arbetsgivare</th><th>Bolagsbeteckning (namnbaserad)</th><th>BRIS – steg 2</th></tr></thead><tbody id="reviewNames"></tbody></table></div></section><section class="panel"><h2>Metod, avgränsning och osäkerhet</h2><p>Datakälla: Arbetsmiljöverkets söktjänst för utstationering, hämtad dagligen via projektets GitHub Actions. En rad representerar en registrering; fältet <i>Arbetstagare</i> summeras per adress och kommun. Registreringar kan omfatta samma arbetstagare på flera adresser, varför summan inte nödvändigtvis motsvarar unika personer. Adresser kan vara post- eller kontaktadresser snarare än exakt arbetsplats.</p><p>En avsaknad av historiska observationer tolkas inte automatiskt som noll. Datum med helt utebliven hämtning visas inte som observationer. Koordinater är fristående geokodningsresultat i WGS84 (EPSG:4326), medan kartan visas i Web Mercator (EPSG:3857) av Leaflet. Okända eller osäkra adresser placeras inte godtyckligt.</p><p><a href="https://github.com/Lulea-statistik/Statistik-utstationering">Källkod och data på GitHub</a></p></section>
-<footer id="status" aria-live="polite">Läser arbetsgivarnamn…</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.5.2/papaparse.min.js"></script>
-<script>
-const root='https://raw.githubusercontent.com/Lulea-statistik/Statistik-utstationering/main/';
-const $=id=>document.getElementById(id),norm=s=>String(s??'').normalize('NFKC').replace(/\s+/g,' ').trim();let rows=[];
-const companyForms=[
- ['Sp. z o.o.','Polen',/\bsp\.?\s*z\.?\s*o\.?\s*o\.?$/iu],
- ['GmbH & Co. KG','Tyskland',/\bgmbh\s*&\s*co\.?\s*kg\.?$/iu],
- ['s.r.o.','Tjeckien / Slovakien',/\bs\.?\s*r\.?\s*o\.?$/iu],
- ['d.o.o.','Balkan',/\bd\.?\s*o\.?\s*o\.?$/iu],
- ['S.p.A.','Italien',/\bs\.?\s*p\.?\s*a\.?$/iu],
- ['S.r.l.','Italien / Rumänien',/\bs\.?\s*r\.?\s*l\.?$/iu],
- ['GmbH','Tyskland / Österrike',/\bgmbh\.?$/iu],
- ['SARL','Frankrike / Luxemburg',/\bsarl\.?$/iu],
- ['ApS','Danmark',/\baps\.?$/iu],
- ['ASA','Norge',/\basa\.?$/iu],
- ['Oy / Oyj','Finland',/\boyj?\.?$/iu],
- ['OÜ','Estland',/\boü\.?$/iu],
- ['UAB','Litauen',/\buab\.?$/iu],
- ['SIA','Lettland',/\bsia\.?$/iu],
- ['Kft.','Ungern',/\bkft\.?$/iu],
- ['Lda.','Portugal',/\blda\.?$/iu],
- ['EOOD / OOD','Bulgarien',/\b(?:eood|ood)\.?$/iu],
- ['Ltd / Limited','Storbritannien / Irland m.fl.',/\b(?:ltd|limited)\.?$/iu],
- ['PLC','Storbritannien / Irland',/\bplc\.?$/iu],
- ['LLC','Internationellt',/\bllc\.?$/iu],
- ['BV / B.V.','Nederländerna / Belgien',/\bb\.?\s*v\.?$/iu],
- ['NV / N.V.','Nederländerna / Belgien',/\bn\.?\s*v\.?$/iu],
- ['AG','Tyskland / Schweiz / Österrike',/\bag\.?$/iu],
- ['AB','Sverige',/\bab\.?$/iu],
- ['AS / A.S.','Norge / Estland / Tjeckien m.fl.',/\ba\.?\s*s\.?$/iu],
- ['A/S','Danmark / Norge',/\ba\s*\/\s*s\.?$/iu],
- ['SA / S.A.','Flera europeiska länder',/\bs\.?\s*a\.?$/iu],
- ['SL / S.L.','Spanien',/\bs\.?\s*l\.?$/iu],
- ['SE','EU-bolagsform',/\bse\.?$/iu]
-];
-function nameRisk(name){const n=norm(name).replace(/[,;]+$/,'').trim();const prefixForms=[['UAB','Litauen',/^uab\b[\s.,-]+/iu],['SIA','Lettland',/^sia\b[\s.,-]+/iu],['OÜ','Estland',/^oü\b[\s.,-]+/iu],['AS','Norge / Estland',/^as\b[\s.,-]+/iu],['Sp. z o.o.','Polen',/^sp\.?\s*z\.?\s*o\.?\s*o\.?\s+/iu]];const foundPrefix=prefixForms.find(([label,country,rx])=>rx.test(n));const found=foundPrefix||companyForms.find(([label,country,rx])=>rx.test(n));return found?{flag:false,reason:found[0]+' · '+found[1]+' (namnbaserad)',matched:true}:{flag:false,reason:'Ingen känd bolagsbeteckning identifierad',matched:false};}
-function renderNameReview(){const names=[...new Set(rows.map(r=>norm(r.Arbetsgivare)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'sv'));const search=norm($('reviewSearch').value).toLocaleLowerCase('sv');const matched=names.filter(n=>nameRisk(n).matched).length;const visible=names.filter(n=>n.toLocaleLowerCase('sv').includes(search)&&(!$('reviewFlaggedOnly').checked||!nameRisk(n).matched));$('reviewSummary').textContent=names.length+' unika arbetsgivarnamn; '+matched+' med igenkänd bolagsbeteckning, '+(names.length-matched)+' utan matchning. Detta är en bred granskningslista, inte en bedömning av bolagsform. '+visible.length+' sökträffar.';$('reviewNames').replaceChildren();visible.slice(0,300).forEach(n=>{const tr=document.createElement('tr');const a=document.createElement('td');a.textContent=n;const b=document.createElement('td');b.textContent=nameRisk(n).reason;const c=document.createElement('td');const link=document.createElement('a');link.href='https://e-justice.europa.eu/topics/registers-business-insolvency-land/business-registers-search-company-eu_en';link.target='_blank';link.rel='noopener noreferrer';link.textContent='Öppna BRIS ↗';link.title='Sök detta namn manuellt i BRIS: '+n;c.append(link);tr.append(a,b,c);$('reviewNames').append(tr)});if(visible.length>300){const tr=document.createElement('tr');const td=document.createElement('td');td.colSpan=3;td.textContent='Visar de första 300 träffarna. Begränsa sökningen.';tr.append(td);$('reviewNames').append(tr)}}
-
-function parse(text){return Papa.parse(text.replace(/^\uFEFF/,''),{header:true,delimiter:';',skipEmptyLines:true}).data.filter(r=>/^\d{4}-\d\d-\d\d$/.test(r.SnapshotDate||''))}
-async function loadData(){const urls=[root+'data/history.csv',root+'data/latest.csv'];const result=await Promise.allSettled(urls.map(async u=>{const r=await fetch(u+'?t='+Math.floor(Date.now()/3600000));if(!r.ok)throw Error(r.status);return parse(await r.text())}));const ok=result.filter(r=>r.status==='fulfilled').flatMap(r=>r.value);if(!ok.length)throw Error('Inga dataposter gick att läsa');rows=ok;$('reviewSearch').addEventListener('input',renderNameReview);$('reviewFlaggedOnly').addEventListener('change',renderNameReview);renderNameReview();$('status').textContent='Arbetsgivarnamnen har lästs från projektets historiska och senaste registreringar.'}
-loadData().catch(e=>{$('status').textContent='Kunde inte läsa arbetsgivarnamn: '+e.message;console.error(e)});
-</script></body></html>
+<main class="wrap"><section class="panel"><h2>Metod, avgränsning och osäkerhet</h2><p>Datakälla: Arbetsmiljöverkets söktjänst för utstationering, hämtad dagligen via projektets GitHub Actions. En rad representerar en registrering; fältet <i>Arbetstagare</i> summeras per adress och kommun. Registreringar kan omfatta samma arbetstagare på flera adresser, varför summan inte nödvändigtvis motsvarar unika personer. Adresser kan vara post- eller kontaktadresser snarare än exakt arbetsplats.</p><p>En avsaknad av historiska observationer tolkas inte automatiskt som noll. Datum med helt utebliven hämtning visas inte som observationer. Koordinater är fristående geokodningsresultat i WGS84 (EPSG:4326), medan kartan visas i Web Mercator (EPSG:3857) av Leaflet. Okända eller osäkra adresser placeras inte godtyckligt.</p><h3>Kvalitetskontroll av arbetsgivarnamn och integritet</h3><p>Arbetsgivarnamn hämtas från Arbetsmiljöverkets offentliga söktjänst för utstationering. Namnuppgifterna kontrolleras i projektets bearbetning. Vanliga europeiska bolagsbeteckningar, exempelvis AB, AS, UAB, Oy, Ltd och GmbH, kan användas som stöd vid kvalitetsgranskning. Uppgifter som Arbetsmiljöverket filtrerar bort i sin publicerade källa kommer inte med i vår hämtning. Detta är dock ingen garanti för att enskilda personnamn aldrig förekommer.</p><p>Enbart avsaknad av känd bolagsbeteckning innebär inte att arbetsgivaren är en enskild näringsidkare. Eventuella namn som efter kontroll bedöms vara personuppgifter ska tas bort från den publika statistiken och berörda publicerade datafilerna skyndsamt. Felaktiga träffar och osäkra fall granskas individuellt; namn klassas inte automatiskt som personnamn bara utifrån stavning eller utländsk namnform.</p><p><a href="https://github.com/Lulea-statistik/Statistik-utstationering">Källkod och data på GitHub</a></p></section>
+</main>
+</body></html>
