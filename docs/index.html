@@ -107,23 +107,24 @@ function renderMissing(){const all=eachGroup(rows,r=>key(r.Plats,r.Kommun));cons
 function resizeCircles(){const z=map.getZoom();for(const m of markerEntries){const factor=Math.min(1,Math.pow(0.72,Math.max(0,10-z)));m.layer.setRadius(Math.max(2,Math.min(18,Math.sqrt(m.n)*1.55)*factor));}}
 // Keep Leaflet popups fully inside the actual map viewport, including after flyTo.
 // Pan the map once after opening, rather than translating the popup over its marker.
-function keepPopupVisible(popup){
- requestAnimationFrame(()=>{
-  if(!map.hasLayer(popup))return;
-  const node=popup.getElement();if(!node)return;
-  node.style.translate='0px 0px';
-  const viewport=map.getContainer().getBoundingClientRect();
-  const rect=node.getBoundingClientRect(),pad=14;
-  // The popup is anchored above the marker. Shifting the map north
-  // moves both marker and popup downward while preserving their relationship.
-  const shiftX=rect.left<viewport.left+pad?viewport.left+pad-rect.left:
-    rect.right>viewport.right-pad?viewport.right-pad-rect.right:0;
-  const shiftY=rect.top<viewport.top+pad?viewport.top+pad-rect.top:
-    rect.bottom>viewport.bottom-pad?viewport.bottom-pad-rect.bottom:0;
-  if(shiftX||shiftY)map.panBy([-shiftX,-shiftY],{animate:false});
- });
+// Shared selection path for both map circles and the address ranking.
+function zoomAddress(k){
+ const loc=coords[k];if(!loc||!Number.isFinite(+loc.lat)||!Number.isFinite(+loc.lon))return false;
+ const colocated=markerEntries.find(m=>m.addressKeys&&m.addressKeys.includes(k));
+ const large=colocated&&(colocated.addressKeys.length>3||colocated.maxEmployers>6);
+ const level=large?13:(loc.precision==='street'||loc.precision==='approximate'?15:17);
+ map.stop();map.setView([+loc.lat,+loc.lon],level,{animate:false});return true;
 }
-function zoomAddress(k){const loc=coords[k];if(!loc||!Number.isFinite(+loc.lat)||!Number.isFinite(+loc.lon))return false;map.stop();map.setView([+loc.lat,+loc.lon],loc.precision==='street'?15:17,{animate:false});return true;}
+function selectMapAddress(k,showPopup=true){
+ activeAddress=k;$('address').value=k;$('addressCombo').refresh();drawCharts();
+ const marker=markerEntries.find(m=>m.addressKeys&&m.addressKeys.includes(k));
+ if(showPopup&&marker){
+  const item=marker.items.find(it=>it.k===k);
+  if(item)marker.layer.setPopupContent(marker.popupContent(item));
+ }
+ zoomAddress(k);
+ if(showPopup&&marker)marker.layer.openPopup();
+}
 function render(){
  const allToday=baseFiltered(dataAt($('date').value));const employerNames=[...new Set(allToday.map(r=>norm(r.Arbetsgivare)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'sv'));const previousEmployer=$('employer').value;$('employer').innerHTML='<option value="">Alla arbetsgivare</option>'+employerNames.map(e=>'<option value="'+esc(e)+'">'+esc(e)+'</option>').join('');if(employerNames.includes(previousEmployer))$('employer').value=previousEmployer; $('employerCombo').refresh();const forAddresses=allToday.filter(r=>!$('employer').value||norm(r.Arbetsgivare)===$('employer').value);const addresses=eachGroup(forAddresses,r=>key(r.Plats,r.Kommun));let current=$('address').value;
  $('address').innerHTML='<option value="">Alla adresser</option>'+[...addresses].sort((a,b)=>count(b[1])-count(a[1])).map(([k,rs])=>'<option value="'+esc(k)+'">'+esc(rs[0].Plats)+' ('+esc(rs[0].Kommun)+')</option>').join('');
@@ -145,7 +146,7 @@ function render(){
    const total=colocated.reduce((sum,item)=>sum+item.n,0);
    const approx=colocated.some(item=>item.loc.precision==='street'||item.loc.precision==='approximate');
    const circle=L.circleMarker([lat,lon],{radius:Math.max(2,Math.min(18,Math.sqrt(total)*1.55)),weight:1.5,color:'#5b21a5',fillColor:'#a855f7',dashArray:approx?'4 4':null,fillOpacity:.55}).addTo(circles);
-   markerEntries.push({layer:circle,n:total});
+   markerEntries.push({layer:circle,n:total,addressKeys:colocated.map(item=>item.k),items:colocated,maxEmployers:Math.max(...colocated.map(item=>eachGroup(item.rs,r=>r.Arbetsgivare).size)),popupContent:null});
    const popupDetails=(item)=>{
      const firms=[...eachGroup(item.rs,r=>r.Arbetsgivare)].sort((a,b)=>count(b[1])-count(a[1])).map(([name,recs])=>'<div class="popup-employer-row">'+esc(name)+' ('+count(recs)+')</div>').join('');
      const approximate=item.loc.precision==='street'||item.loc.precision==='approximate';
@@ -163,9 +164,9 @@ function render(){
      drawCharts();
    };
    const initial=colocated.find(item=>item.k===$('address').value)||first;
+   markerEntries[markerEntries.length-1].popupContent=popupContent;
    circle.bindPopup(popupContent(initial),{maxWidth:360,maxHeight:440,autoPan:false,offset:[0,-6]});
    circle.on('popupopen',()=>{
-     keepPopupVisible(circle.getPopup());
      const select=circle.getPopup().getElement()?.querySelector('#colocated-address-select');
      if(!select)return;
      select.addEventListener('change',()=>{
@@ -178,17 +179,14 @@ function render(){
    });
    circle.on('click',()=>{
      const item=colocated.find(entry=>entry.k===activeAddress)||first;
-     choose(item);
-     circle.setPopupContent(popupContent(item));
-     zoomAddress(item.k);
-     circle.openPopup();
+     selectMapAddress(item.k);
    });
    points.push([lat,lon]);
  }
  $('coverage').textContent=mapped+' / '+group.size;$('geoNotice').hidden=mapped===group.size;$('geoNotice').textContent=(group.size-mapped)+' adresser saknar kartposition men visas i adresstabellen med länk för adressökning.'+(Object.keys(coords).length===0?' Koordinatfilen är ännu inte skapad: gå till GitHub → Actions → Geokoda utstationeringsadresser → Run workflow.':'');
  if(points.length&&!$('address').value)map.fitBounds(L.latLngBounds(points).pad(.18),{maxZoom:13});resizeCircles();
  $('top').innerHTML=sorted.map(([k,rs])=>'<tr class="pick" data-key="'+esc(k)+'"><td>'+esc(rs[0].Plats)+'</td><td>'+esc(rs[0].Kommun)+'</td><td>'+count(rs)+'</td></tr>').join('');
- document.querySelectorAll('tr.pick').forEach(el=>el.addEventListener('click',()=>{activeAddress=el.dataset.key;$('address').value=activeAddress;$('addressCombo').refresh();zoomAddress(activeAddress);drawCharts()}));
+ document.querySelectorAll('tr.pick').forEach(el=>el.addEventListener('click',()=>{selectMapAddress(el.dataset.key)}));
  drawCharts();
 }
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
