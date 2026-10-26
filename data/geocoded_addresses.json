@@ -26,6 +26,13 @@
     "precision": "street",
     "source": "OpenStreetMap Nominatim"
   },
+  "Bensinvägen 21 97437 Luleå|Luleå": {
+    "lat": 65.5548791,
+    "lon": 22.2240996,
+    "matched_name": "Bensinvägen, Svartöstan, Luleå, Luleå kommun, Norrbottens län, 974 38, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
   "Betongvägen 15 97345 Luleå|Luleå": {
     "lat": 65.6110311,
     "lon": 22.0510169,
@@ -210,6 +217,13 @@
     "lat": 65.5868938,
     "lon": 22.1587247,
     "matched_name": "Magasinsgatan, Södra hamn, Luleå, Luleå kommun, Norrbottens län, 972 31, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Malmgatan 19 96167 Boden|Boden": {
+    "lat": 65.825941,
+    "lon": 21.7117294,
+    "matched_name": "Malmgatan, Erikslund, Boden, Bodens kommun, Norrbottens län, 961 67, Sverige",
     "precision": "street",
     "source": "OpenStreetMap Nominatim"
   },

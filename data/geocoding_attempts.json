@@ -1,8 +1,8 @@
 {
   "Flarkenvägen 15 Boden|Boden": {
-    "failures": 2,
-    "last_attempt": "2026-10-19",
-    "next_retry": "2026-10-21",
+    "failures": 3,
+    "last_attempt": "2026-10-26",
+    "next_retry": "2026-10-30",
     "status": "not_found"
   },
   "Hydrogränd 2 96143 Boden|Boden": {
@@ -30,9 +30,9 @@
     "status": "not_found"
   },
   "Viktoriavägen 1 97437 Luleå|Luleå": {
-    "failures": 2,
-    "last_attempt": "2026-10-19",
-    "next_retry": "2026-10-21",
+    "failures": 3,
+    "last_attempt": "2026-10-26",
+    "next_retry": "2026-10-30",
     "status": "not_found"
   },
   "Övre Buddbyn 141 96192 Boden|Boden": {
