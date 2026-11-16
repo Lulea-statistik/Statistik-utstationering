@@ -75,6 +75,16 @@
     "precision": "street",
     "source": "OpenStreetMap Nominatim"
   },
+  "Björnvägen 17 96168 Boden|Boden": {
+    "lat": 65.812199157948,
+    "lon": 21.716574521428,
+    "match_score": 71.53,
+    "matched_name": "Björnvägen 17, 961 68 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
+  },
   "Bodenvägen 405 95442 Södra Sunderbyn|Luleå": {
     "lat": 65.6640566,
     "lon": 21.9532407,
@@ -576,6 +586,16 @@
     "lon": 21.658336205925,
     "match_score": 74.73,
     "matched_name": "Övre Buddbyn 141, 961 92 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
+  },
+  "Övrebodarna 7 96193 Boden|Boden": {
+    "lat": 65.74161129042,
+    "lon": 21.755907304807,
+    "match_score": 71.53,
+    "matched_name": "Övrebodarna 7, 961 93 Boden",
     "precision": "exact",
     "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
     "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
