@@ -85,6 +85,13 @@
     "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
     "verification": "municipal_address_match"
   },
+  "Bodavägen 1 96140 Boden|Boden": {
+    "lat": 65.8105486,
+    "lon": 21.7575275,
+    "matched_name": "Bodavägen, Norra Svartbyn, Södra Svartbyn, Bodens kommun, Norrbottens län, 961 40, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
   "Bodenvägen 405 95442 Södra Sunderbyn|Luleå": {
     "lat": 65.6640566,
     "lon": 21.9532407,
@@ -108,6 +115,13 @@
     "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
     "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
     "verification": "municipal_address_match"
+  },
+  "Bygdegårdsvägen 42 97595 Luleå|Luleå": {
+    "lat": 65.5313076,
+    "lon": 22.0539956,
+    "matched_name": "Bygdegårdsvägen, Kallax, Luleå kommun, Norrbottens län, 975 95, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
   },
   "Datavägen 10 97754 Luleå|Luleå": {
     "lat": 65.6186453,
@@ -140,6 +154,13 @@
     "lat": 65.5575995,
     "lon": 21.8247847,
     "matched_name": "Fältskyttevägen, Randia, Antnäs, Luleå kommun, Norrbottens län, 975 93, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Gamla riksvägen 273 97595 Luleå|Luleå": {
+    "lat": 65.5647154,
+    "lon": 21.9105703,
+    "matched_name": "Gamla riksvägen, Bränslan, Luleå, Luleå kommun, Norrbottens län, 975 93, Sverige",
     "precision": "street",
     "source": "OpenStreetMap Nominatim"
   },
@@ -380,6 +401,16 @@
     "precision": "street",
     "source": "OpenStreetMap Nominatim"
   },
+  "Smaragdvägen 30 96146 Boden|Boden": {
+    "lat": 65.814698729635,
+    "lon": 21.577738643067,
+    "match_score": 74.73,
+    "matched_name": "Smaragdvägen 30, 961 46 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
+  },
   "Småbåtsgatan 1 97235 Luleå|Luleå": {
     "lat": 65.5811,
     "lon": 22.1605,
@@ -403,6 +434,23 @@
     "lon": 22.0414777,
     "source": "OpenStreetMap Nominatim"
   },
+  "Storklinten 2 96198 Boden|Boden": {
+    "lat": 66.020809219621,
+    "lon": 21.249057450433,
+    "match_score": 71.53,
+    "matched_name": "Storklinten 2, 961 98 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
+  },
+  "Stormvägen 327 97634 Luleå|Luleå": {
+    "lat": 65.6201002,
+    "lon": 22.1695927,
+    "matched_name": "Stormvägen, Björkskatan, Luleå, Luleå kommun, Norrbottens län, 976 34, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
   "Strömörvägen 2C 97437 Luleå|Luleå": {
     "lat": 65.5536113,
     "lon": 22.2306708,
@@ -422,6 +470,16 @@
     "lon": 21.685876030051,
     "match_score": 71.53,
     "matched_name": "Sturegatan 34, 961 33 Boden",
+    "precision": "exact",
+    "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
+    "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
+    "verification": "municipal_address_match"
+  },
+  "Sturegatan 4B 96173 Boden|Boden": {
+    "lat": 65.821404714932,
+    "lon": 21.70422227961,
+    "match_score": 71.53,
+    "matched_name": "Sturegatan 4B, 961 73 Boden",
     "precision": "exact",
     "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
     "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
@@ -456,6 +514,13 @@
     "source": "Bodens kommun, GaidaLocator_Address/GeocodeServer",
     "source_url": "https://gisportal.boden.se/server/rest/services/Gaida/GaidaLocator_Address/GeocodeServer",
     "verification": "municipal_address_match"
+  },
+  "Svartön 1 97597 Luleå|Luleå": {
+    "lat": 65.6604189,
+    "lon": 22.4024307,
+    "matched_name": "Svartön, Luleå, Luleå kommun, Norrbottens län, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
   },
   "Svartövägen 10 97437 Luleå|Luleå": {
     "lat": 65.5630156,
@@ -573,6 +638,13 @@
     "lat": 65.570748,
     "lon": 22.2014398,
     "matched_name": "Uddebovägen, Örnäset, Luleå, Luleå kommun, Norrbottens län, 974 36, Sverige",
+    "precision": "street",
+    "source": "OpenStreetMap Nominatim"
+  },
+  "Uddebovägen 8 97437 Luleå|Luleå": {
+    "lat": 65.5656155,
+    "lon": 22.2168165,
+    "matched_name": "Uddebovägen, Örnäset, Luleå, Luleå kommun, Norrbottens län, 974 38, Sverige",
     "precision": "street",
     "source": "OpenStreetMap Nominatim"
   },
